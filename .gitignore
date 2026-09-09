@@ -1,0 +1,43 @@
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+
+# Node / React
+node_modules/
+dist/
+build/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / editor
+.vscode/
+.idea/
+
+# Archives / generated backups
+*.tar.gz
+
+
+# Project-generated documents / utility scripts
+BusGo_AWS_Deployment_Implementation_Plan.pdf
+BusGo_Project_Status_Report.pdf
+generate_plan_pdf.py
+generate_report_pdf.py
+
