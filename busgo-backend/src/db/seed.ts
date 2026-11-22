@@ -7,6 +7,7 @@ import { seatCount } from '../bus-routes/seat-layout.js';
 import { hashPassword } from '../common/password.js';
 import type { Database } from './relations.js';
 import {
+  boardingPoints,
   busRoutes,
   busStops,
   type NewBusRoute,
@@ -107,6 +108,32 @@ const routes: {
   { routeNumber: '21', operator: 'Hill Country Express', from: 'KDY', to: 'BDL', departs: '10:00', arrives: '14:30', price: 600, serviceType: 'normal', busNumber: 'CP-2214' },
 ];
 
+// ---------- Boarding points per corridor ----------
+// Towns in travel order with how far along the journey they are (0-1).
+// Every bus on a corridor stops at the same towns; times scale with the
+// bus's own journey time. Return trips use the same towns reversed.
+
+// prettier-ignore
+const corridors: Record<string, [town: string, fraction: number][]> = {
+  'CMB-KDY': [['Kadawatha', 0.12], ['Nittambuwa', 0.28], ['Warakapola', 0.42], ['Kegalle', 0.55], ['Mawanella', 0.68], ['Peradeniya', 0.9]],
+  'CMB-GLE': [['Makumbura (Kottawa)', 0.25]],
+  'CMB-MTR': [['Makumbura (Kottawa)', 0.2], ['Pinnaduwa (Galle)', 0.7]],
+  'CMB-JFN': [['Kurunegala', 0.2], ['Dambulla', 0.38], ['Vavuniya', 0.65], ['Kilinochchi', 0.85]],
+  'CMB-NGB': [['Wattala', 0.3], ['Ja-Ela', 0.6]],
+  'CMB-ADP': [['Kurunegala', 0.4], ['Galgamuwa', 0.75]],
+  'CMB-TRC': [['Kurunegala', 0.25], ['Dambulla', 0.5], ['Habarana', 0.65], ['Kantale', 0.82]],
+  'CMB-BDL': [['Avissawella', 0.15], ['Ratnapura', 0.35], ['Balangoda', 0.55], ['Bandarawela', 0.85]],
+  'CMB-BTC': [['Kurunegala', 0.2], ['Dambulla', 0.4], ['Polonnaruwa', 0.6], ['Valaichchenai', 0.85]],
+  'KDY-BDL': [['Gampola', 0.2], ['Nuwara Eliya', 0.5], ['Welimada', 0.75]],
+};
+
+function boardingTowns(from: string, to: string) {
+  const forward = corridors[`${from}-${to}`];
+  if (forward) return forward;
+  const reverse = corridors[`${to}-${from}`] ?? [];
+  return reverse.map(([town, f]): [string, number] => [town, 1 - f]).reverse();
+}
+
 /** Minutes between two HH:MM times, crossing midnight if needed. */
 function minutesBetween(departs: string, arrives: string): number {
   const toMin = (t: string) => {
@@ -153,10 +180,30 @@ export async function seed(db: Database) {
     );
   }
 
+  if ((await db.$count(boardingPoints)) === 0) {
+    const codeById = new Map([...stopId].map(([code, id]) => [id, code]));
+    const points = (await db.select().from(busRoutes)).flatMap((route) =>
+      boardingTowns(
+        codeById.get(route.fromStopId)!,
+        codeById.get(route.toStopId)!,
+      ).map(([name, fraction], i) => ({
+        routeId: route.id,
+        name,
+        stopOrder: i + 1,
+        minutesFromStart: Math.max(
+          1,
+          Math.round(route.durationMinutes * fraction),
+        ),
+      })),
+    );
+    if (points.length > 0) await db.insert(boardingPoints).values(points);
+  }
+
   console.log(
     `Seed complete: ${await db.$count(users)} users, ` +
       `${await db.$count(busStops)} stops, ` +
       `${await db.$count(operators)} operators, ` +
-      `${await db.$count(busRoutes)} routes`,
+      `${await db.$count(busRoutes)} routes, ` +
+      `${await db.$count(boardingPoints)} boarding points`,
   );
 }
