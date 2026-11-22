@@ -34,6 +34,13 @@ export const paymentStatus = pgEnum('payment_status', [
   'failed',
 ]);
 
+// Payment is simulated in this project: no real money moves.
+export const paymentMethod = pgEnum('payment_method', [
+  'card',
+  'ez_cash',
+  'bank_transfer',
+]);
+
 export const bookingStatus = pgEnum('booking_status', [
   'confirmed',
   'cancelled',
@@ -154,10 +161,16 @@ export const bookings = pgTable(
     passengerEmail: varchar('passenger_email', { length: 150 }).notNull(),
     passengerPhone: varchar('passenger_phone', { length: 20 }),
     passengerIdNumber: varchar('passenger_id_number', { length: 50 }),
+    /** Where the passenger gets on; null = the route's starting bus stand. */
+    boardingPointId: integer('boarding_point_id').references(
+      () => boardingPoints.id,
+    ),
+    /** The route fare at the time of booking (LKR). */
     basePrice: numeric('base_price', { precision: 10, scale: 2 }).notNull(),
-    taxAmount: numeric('tax_amount', { precision: 10, scale: 2 }).notNull(),
+    serviceFee: numeric('service_fee', { precision: 10, scale: 2 }).notNull(),
     totalAmount: numeric('total_amount', { precision: 10, scale: 2 }).notNull(),
     paymentStatus: paymentStatus('payment_status').notNull().default('pending'),
+    paymentMethod: paymentMethod('payment_method'),
     bookingStatus: bookingStatus('booking_status')
       .notNull()
       .default('confirmed'),
@@ -167,8 +180,20 @@ export const bookings = pgTable(
     bookedAt: timestamp('booked_at', { withTimezone: true })
       .notNull()
       .defaultNow(),
+    // Filled in when the passenger cancels.
+    cancelledAt: timestamp('cancelled_at', { withTimezone: true }),
+    /** Cancellation % charge + processing fee kept by BusGo/operator. */
+    cancellationCharge: numeric('cancellation_charge', {
+      precision: 10,
+      scale: 2,
+    }),
+    refundAmount: numeric('refund_amount', { precision: 10, scale: 2 }),
   },
   (t) => [
+    check(
+      'bookings_total_matches',
+      sql`${t.totalAmount} = ${t.basePrice} + ${t.serviceFee}`,
+    ),
     // A seat can only be held by one non-cancelled booking per trip.
     // Cancelled bookings stay for history but free the seat for rebooking.
     uniqueIndex('bookings_active_seat_uq')

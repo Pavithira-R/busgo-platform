@@ -1,0 +1,322 @@
+{
+  "type": "diff",
+  "version": "10",
+  "dialect": "postgres",
+  "id": "e74ef733-2abf-42a5-86b7-62dfb4a63334",
+  "prevIds": [
+    "e79024ab-f8bc-4950-879a-f345bfc8534f"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "payment_method"
+      ],
+      "writes": [
+        "s|enum|public.payment_method",
+        "n|enum|public.payment_method",
+        "e|enum|public.payment_method",
+        "n|type|public.payment_method"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bookings",
+        "boarding_point_id"
+      ],
+      "writes": [
+        "s|col|public.bookings.boarding_point_id",
+        "n|col|public.bookings.boarding_point_id",
+        "e|col|public.bookings.boarding_point_id"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bookings",
+        "service_fee"
+      ],
+      "writes": [
+        "s|col|public.bookings.service_fee",
+        "n|col|public.bookings.service_fee",
+        "e|col|public.bookings.service_fee"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bookings",
+        "payment_method"
+      ],
+      "writes": [
+        "s|col|public.bookings.payment_method",
+        "n|col|public.bookings.payment_method",
+        "e|col|public.bookings.payment_method"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public",
+        "n|enum|public.payment_method"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bookings",
+        "cancelled_at"
+      ],
+      "writes": [
+        "s|col|public.bookings.cancelled_at",
+        "n|col|public.bookings.cancelled_at",
+        "e|col|public.bookings.cancelled_at"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bookings",
+        "cancellation_charge"
+      ],
+      "writes": [
+        "s|col|public.bookings.cancellation_charge",
+        "n|col|public.bookings.cancellation_charge",
+        "e|col|public.bookings.cancellation_charge"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bookings",
+        "refund_amount"
+      ],
+      "writes": [
+        "s|col|public.bookings.refund_amount",
+        "n|col|public.bookings.refund_amount",
+        "e|col|public.bookings.refund_amount"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "bookings"
+      ],
+      "writes": [
+        "s|fk|public.bookings.bookings_boarding_point_id_boarding_points_id_fkey",
+        "n|fk|public.bookings.bookings_boarding_point_id_boarding_points_id_fkey",
+        "e|fk|public.bookings.bookings_boarding_point_id_boarding_points_id_fkey",
+        "n|con|public.bookings.bookings_boarding_point_id_boarding_points_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public",
+        "n|tbl|public.boarding_points",
+        "n|sch|public",
+        "n|col|public.bookings.boarding_point_id",
+        "n|col|public.boarding_points.id",
+        "e|uniqueness|public.boarding_points.id"
+      ]
+    },
+    {
+      "statementType": "add_check",
+      "statementTarget": [
+        "table",
+        "public",
+        "bookings"
+      ],
+      "writes": [
+        "s|ck|public.bookings.bookings_total_matches",
+        "n|ck|public.bookings.bookings_total_matches",
+        "e|ck|public.bookings.bookings_total_matches",
+        "n|con|public.bookings.bookings_total_matches"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public",
+        "n|col|public.bookings.total_amount",
+        "n|col|public.bookings.base_price",
+        "n|col|public.bookings.service_fee"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "payment_method",
+        "values": [
+          "card",
+          "ez_cash",
+          "bank_transfer"
+        ],
+        "entityType": "enums"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bookings",
+        "name": "boarding_point_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bookings",
+        "name": "service_fee",
+        "type": "numeric(10,2)",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bookings",
+        "name": "payment_method",
+        "type": "payment_method",
+        "typeSchema": "public",
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bookings",
+        "name": "cancelled_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bookings",
+        "name": "cancellation_charge",
+        "type": "numeric(10,2)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bookings",
+        "name": "refund_amount",
+        "type": "numeric(10,2)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bookings",
+        "name": "bookings_boarding_point_id_boarding_points_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "boarding_point_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "boarding_points",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "NO ACTION",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bookings",
+        "name": "bookings_total_matches",
+        "value": "\"total_amount\" = \"base_price\" + \"service_fee\"",
+        "entityType": "checks"
+      }
+    }
+  ]
+}

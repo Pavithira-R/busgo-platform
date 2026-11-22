@@ -60,8 +60,8 @@ describe('Bus routes (e2e)', () => {
       passengerName: 'E2E',
       passengerEmail: 'e2e@test.lk',
       basePrice: '420.00',
-      taxAmount: '21.00',
-      totalAmount: '441.00',
+      serviceFee: '100.00',
+      totalAmount: '520.00',
       qrPayload: {},
     };
     await db.insert(bookings).values([
