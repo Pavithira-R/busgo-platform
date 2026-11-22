@@ -2,8 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDrizzle } from '@nestjs/drizzle';
 import { and, asc, count, eq, inArray, ne, type SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
+import { addMinutes } from '../common/time.js';
 import type { Database } from '../db/relations.js';
-import { bookings, busRoutes, busStops, operators } from '../db/schema.js';
+import {
+  boardingPoints,
+  bookings,
+  busRoutes,
+  busStops,
+  operators,
+} from '../db/schema.js';
 import type { SearchRoutesQuery } from './bus-routes.schemas.js';
 import { layoutFor, seatLabels, type SeatLayout } from './seat-layout.js';
 
@@ -38,6 +45,16 @@ function present(row: RouteRow) {
 }
 export type RouteView = ReturnType<typeof present>;
 
+export interface BoardingPointView {
+  id: number;
+  name: string;
+  order: number;
+  /** Estimated time the bus reaches this town, "HH:MM". */
+  time: string;
+}
+
+export type RouteDetails = RouteView & { boardingPoints: BoardingPointView[] };
+
 export interface SeatMap {
   routeId: number;
   date: string;
@@ -68,7 +85,7 @@ export class BusRoutesService {
 
   async search(
     query: SearchRoutesQuery,
-  ): Promise<(RouteView & { availableSeats?: number })[]> {
+  ): Promise<(RouteView & { via: string[]; availableSeats?: number })[]> {
     const filters: SQL[] = [
       eq(busRoutes.isActive, true),
       eq(operators.isActive, true),
@@ -82,17 +99,37 @@ export class BusRoutesService {
       filters.push(eq(busRoutes.operatorId, query.operatorId));
     }
 
-    const routes = (await this.selectRoutes(and(...filters))).map(present);
-    if (!query.date || routes.length === 0) return routes;
+    const found = (await this.selectRoutes(and(...filters))).map(present);
+    if (found.length === 0) return [];
 
-    const booked = await this.bookedCounts(
-      routes.map((r) => r.id),
-      query.date,
-    );
+    const ids = found.map((r) => r.id);
+    const points = await this.boardingPointsFor(ids);
+    const routes = found.map((r) => ({
+      ...r,
+      via: (points.get(r.id) ?? []).map((p) => p.name),
+    }));
+    if (!query.date) return routes;
+
+    const booked = await this.bookedCounts(ids, query.date);
     return routes.map((r) => ({
       ...r,
       availableSeats: r.totalSeats - (booked.get(r.id) ?? 0),
     }));
+  }
+
+  /** Route details including the towns where passengers can board. */
+  async findDetails(id: number): Promise<RouteDetails> {
+    const route = await this.findOne(id);
+    const points = (await this.boardingPointsFor([id])).get(id) ?? [];
+    return {
+      ...route,
+      boardingPoints: points.map((p) => ({
+        id: p.id,
+        name: p.name,
+        order: p.stopOrder,
+        time: addMinutes(route.departureTime, p.minutesFromStart),
+      })),
+    };
   }
 
   async findOne(id: number): Promise<RouteView> {
@@ -142,6 +179,20 @@ export class BusRoutesService {
       .innerJoin(toStop, eq(busRoutes.toStopId, toStop.id))
       .where(where)
       .orderBy(asc(busRoutes.departureTime), asc(busRoutes.id));
+  }
+
+  /** Boarding points for several routes, grouped by route, in travel order. */
+  private async boardingPointsFor(routeIds: number[]) {
+    const rows = await this.db
+      .select()
+      .from(boardingPoints)
+      .where(inArray(boardingPoints.routeId, routeIds))
+      .orderBy(asc(boardingPoints.routeId), asc(boardingPoints.stopOrder));
+    const byRoute = new Map<number, typeof rows>();
+    for (const row of rows) {
+      byRoute.set(row.routeId, [...(byRoute.get(row.routeId) ?? []), row]);
+    }
+    return byRoute;
   }
 
   /** Bookings that hold a seat: everything except cancelled ones. */
