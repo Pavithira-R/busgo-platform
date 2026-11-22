@@ -5,3 +5,11 @@ __pycache__/
 dist/
 venv/
 .venv/
+*.db
+
+# Node
+node_modules/
+coverage/
+.env.*
+!.env.example
+*.tsbuildinfo
