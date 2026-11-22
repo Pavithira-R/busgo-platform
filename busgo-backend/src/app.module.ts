@@ -8,6 +8,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './auth/auth.module.js';
+import { BusRoutesModule } from './bus-routes/bus-routes.module.js';
 import { envSchema } from './config/env.js';
 import { relations } from './db/relations.js';
 
@@ -39,6 +40,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     // Every route must declare who may use it: @Can(...), @Can.Anyone() or @Public().
     AuthorizationModule.forRoot(),
     AuthModule,
+    BusRoutesModule,
     // Optional telemetry. Sends nothing until OBSERVE_APP_KEY is set in .env.
     ObserveModule.forRoot({
       appKey: process.env.OBSERVE_APP_KEY ?? 'YOUR_APP_KEY',
