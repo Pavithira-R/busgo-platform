@@ -30,6 +30,13 @@ export const relations = defineRelations(schema, (r) => ({
       alias: 'to_stop',
     }),
     bookings: r.many.bookings(),
+    boardingPoints: r.many.boardingPoints(),
+  },
+  boardingPoints: {
+    route: r.one.busRoutes({
+      from: r.boardingPoints.routeId,
+      to: r.busRoutes.id,
+    }),
   },
   bookings: {
     user: r.one.users({ from: r.bookings.userId, to: r.users.id }),

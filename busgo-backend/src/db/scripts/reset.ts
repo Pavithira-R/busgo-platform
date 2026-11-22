@@ -9,7 +9,7 @@ if (process.env.NODE_ENV === 'production') {
 
 await withScriptDb(async (db) => {
   await db.execute(sql`
-    TRUNCATE scan_logs, bookings, bus_routes, operators, bus_stops, users
+    TRUNCATE scan_logs, bookings, boarding_points, bus_routes, operators, bus_stops, users
     RESTART IDENTITY CASCADE
   `);
   console.log('All data removed.');

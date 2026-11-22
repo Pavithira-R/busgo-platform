@@ -1,0 +1,257 @@
+{
+  "type": "diff",
+  "version": "10",
+  "dialect": "postgres",
+  "id": "54679b0e-d455-4f5a-8279-f27438456506",
+  "prevIds": [
+    "97c8d5a2-a6d1-497c-8ddf-8059d701099b"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "boarding_points"
+      ],
+      "writes": [
+        "s|tbl|public.boarding_points",
+        "n|tbl|public.boarding_points",
+        "e|tbl|public.boarding_points",
+        "n|rel|public.boarding_points",
+        "n|type|public.boarding_points",
+        "n|rel|public.boarding_points_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "boarding_points",
+        "boarding_points_route_order_uq"
+      ],
+      "writes": [
+        "s|idx|public.boarding_points_route_order_uq",
+        "n|idx|public.boarding_points_route_order_uq",
+        "e|idx|public.boarding_points_route_order_uq",
+        "n|rel|public.boarding_points_route_order_uq"
+      ],
+      "reads": [
+        "n|tbl|public.boarding_points",
+        "n|sch|public",
+        "n|col|public.boarding_points.route_id",
+        "n|col|public.boarding_points.stop_order"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "boarding_points"
+      ],
+      "writes": [
+        "s|fk|public.boarding_points.boarding_points_route_id_bus_routes_id_fkey",
+        "n|fk|public.boarding_points.boarding_points_route_id_bus_routes_id_fkey",
+        "e|fk|public.boarding_points.boarding_points_route_id_bus_routes_id_fkey",
+        "n|con|public.boarding_points.boarding_points_route_id_bus_routes_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.boarding_points",
+        "n|sch|public",
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|col|public.boarding_points.route_id",
+        "n|col|public.bus_routes.id",
+        "e|uniqueness|public.bus_routes.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "boarding_points",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": {
+          "type": "always",
+          "name": "boarding_points_id_seq",
+          "increment": "1",
+          "startWith": "1",
+          "minValue": "1",
+          "maxValue": "2147483647",
+          "cache": 1,
+          "cycle": false
+        },
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "route_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "name",
+        "type": "varchar(100)",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "stop_order",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "minutes_from_start",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "boarding_points_route_order_uq",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "route_id",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "stop_order",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": true,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "boarding_points_route_id_bus_routes_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "route_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "bus_routes",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "boarding_points_pkey",
+        "columns": [
+          "id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "boarding_points_order_positive",
+        "value": "\"stop_order\" > 0",
+        "entityType": "checks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "boarding_points",
+        "name": "boarding_points_minutes_positive",
+        "value": "\"minutes_from_start\" > 0",
+        "entityType": "checks"
+      }
+    }
+  ]
+}

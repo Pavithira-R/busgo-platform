@@ -35,10 +35,10 @@ export class BusRoutesController {
     return this.busRoutesService.search(query);
   }
 
-  /** One route's details. */
+  /** One route's details, including boarding points with estimated times. */
   @Get(':id')
   findOne(@Param('id', { schema: routeIdSchema }) id: number) {
-    return this.busRoutesService.findOne(id);
+    return this.busRoutesService.findDetails(id);
   }
 
   /** Seat map for a route on a date: which seats are free or booked. */

@@ -134,6 +134,19 @@ describe('Bus routes (e2e)', () => {
       expect(route.availableSeats).toBe(49);
     });
 
+    it('shows the towns each bus goes via', async () => {
+      const res = await http().get('/routes?from=KDY&to=CMB').expect(200);
+      // Return trip: same towns as Colombo → Kandy, reversed.
+      expect(res.body[0].via).toEqual([
+        'Peradeniya',
+        'Mawanella',
+        'Kegalle',
+        'Warakapola',
+        'Nittambuwa',
+        'Kadawatha',
+      ]);
+    });
+
     it('filters by operator', async () => {
       const ops = await http().get('/routes/operators').expect(200);
       const northern = ops.body.find(
@@ -164,6 +177,38 @@ describe('Bus routes (e2e)', () => {
     it('returns one route', async () => {
       const res = await http().get(`/routes/${cmbKdyNormalId}`).expect(200);
       expect(res.body).toMatchObject({ id: cmbKdyNormalId, routeNumber: '01' });
+    });
+
+    it('lists boarding points in travel order with estimated times', async () => {
+      // Seeded 06:00 normal bus, 210 minutes, Colombo → Kandy.
+      const res = await http().get(`/routes/${cmbKdyNormalId}`).expect(200);
+      const points = res.body.boardingPoints;
+      expect(points.map((p: { name: string }) => p.name)).toEqual([
+        'Kadawatha',
+        'Nittambuwa',
+        'Warakapola',
+        'Kegalle',
+        'Mawanella',
+        'Peradeniya',
+      ]);
+      expect(points[0]).toEqual({
+        id: expect.any(Number),
+        name: 'Kadawatha',
+        order: 1,
+        time: '06:25',
+      });
+    });
+
+    it('wraps boarding times past midnight for night buses', async () => {
+      const search = await http()
+        .get('/routes?from=CMB&to=JFN&serviceType=luxury')
+        .expect(200);
+      const res = await http().get(`/routes/${search.body[0].id}`).expect(200);
+      // 21:00 departure; Kilinochchi is about 408 minutes later.
+      const kilinochchi = res.body.boardingPoints.find(
+        (p: { name: string }) => p.name === 'Kilinochchi',
+      );
+      expect(kilinochchi.time).toBe('03:48');
     });
 
     it('returns 404 for unknown and 400 for invalid ids', async () => {
