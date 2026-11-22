@@ -132,6 +132,16 @@ export class BusRoutesService {
     };
   }
 
+  /**
+   * Routes by id for showing existing bookings, including routes that
+   * have since been deactivated.
+   */
+  async findForBookings(ids: number[]): Promise<Map<number, RouteView>> {
+    if (ids.length === 0) return new Map();
+    const rows = await this.selectRoutes(inArray(busRoutes.id, ids));
+    return new Map(rows.map((r) => [r.id, present(r)]));
+  }
+
   async findOne(id: number): Promise<RouteView> {
     const [route] = await this.selectRoutes(
       and(
