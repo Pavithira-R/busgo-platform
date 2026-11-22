@@ -3,7 +3,7 @@ import { InjectDrizzle } from '@nestjs/drizzle';
 import { and, asc, count, eq, inArray, ne, type SQL } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/pg-core';
 import type { Database } from '../db/relations.js';
-import { bookings, busRoutes, busStops } from '../db/schema.js';
+import { bookings, busRoutes, busStops, operators } from '../db/schema.js';
 import type { SearchRoutesQuery } from './bus-routes.schemas.js';
 import { layoutFor, seatLabels, type SeatLayout } from './seat-layout.js';
 
@@ -20,6 +20,7 @@ const routeColumns = {
   serviceType: busRoutes.serviceType,
   totalSeats: busRoutes.totalSeats,
   busNumber: busRoutes.busNumber,
+  operator: { id: operators.id, name: operators.name },
   from: { code: fromStop.code, name: fromStop.name, city: fromStop.city },
   to: { code: toStop.code, name: toStop.name, city: toStop.city },
 };
@@ -57,14 +58,28 @@ export class BusRoutesService {
       .orderBy(asc(busStops.city));
   }
 
+  listOperators() {
+    return this.db
+      .select({ id: operators.id, name: operators.name })
+      .from(operators)
+      .where(eq(operators.isActive, true))
+      .orderBy(asc(operators.name));
+  }
+
   async search(
     query: SearchRoutesQuery,
   ): Promise<(RouteView & { availableSeats?: number })[]> {
-    const filters: SQL[] = [eq(busRoutes.isActive, true)];
+    const filters: SQL[] = [
+      eq(busRoutes.isActive, true),
+      eq(operators.isActive, true),
+    ];
     if (query.from) filters.push(eq(fromStop.code, query.from));
     if (query.to) filters.push(eq(toStop.code, query.to));
     if (query.serviceType) {
       filters.push(eq(busRoutes.serviceType, query.serviceType));
+    }
+    if (query.operatorId) {
+      filters.push(eq(busRoutes.operatorId, query.operatorId));
     }
 
     const routes = (await this.selectRoutes(and(...filters))).map(present);
@@ -82,7 +97,11 @@ export class BusRoutesService {
 
   async findOne(id: number): Promise<RouteView> {
     const [route] = await this.selectRoutes(
-      and(eq(busRoutes.id, id), eq(busRoutes.isActive, true)),
+      and(
+        eq(busRoutes.id, id),
+        eq(busRoutes.isActive, true),
+        eq(operators.isActive, true),
+      ),
     );
     if (!route) throw new NotFoundException('Route not found');
     return present(route);
@@ -100,7 +119,9 @@ export class BusRoutesService {
 
     const seats = seatLabels(layout).map((number) => ({
       number,
-      status: takenSet.has(number) ? ('booked' as const) : ('available' as const),
+      status: takenSet.has(number)
+        ? ('booked' as const)
+        : ('available' as const),
     }));
     return {
       routeId: id,
@@ -116,6 +137,7 @@ export class BusRoutesService {
     return this.db
       .select(routeColumns)
       .from(busRoutes)
+      .innerJoin(operators, eq(busRoutes.operatorId, operators.id))
       .innerJoin(fromStop, eq(busRoutes.fromStopId, fromStop.id))
       .innerJoin(toStop, eq(busRoutes.toStopId, toStop.id))
       .where(where)

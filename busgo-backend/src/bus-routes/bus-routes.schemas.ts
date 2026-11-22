@@ -17,6 +17,7 @@ export const searchRoutesSchema = z.object({
   from: stopCode.optional(),
   to: stopCode.optional(),
   serviceType: z.enum(serviceType.enumValues).optional(),
+  operatorId: z.coerce.number().int().positive().optional(),
   /** When given, each route includes how many seats are free that day. */
   date: travelDate.optional(),
 });
