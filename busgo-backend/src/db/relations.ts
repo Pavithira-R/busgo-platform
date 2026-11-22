@@ -11,7 +11,14 @@ export const relations = defineRelations(schema, (r) => ({
     departures: r.many.busRoutes({ alias: 'from_stop' }),
     arrivals: r.many.busRoutes({ alias: 'to_stop' }),
   },
+  operators: {
+    routes: r.many.busRoutes(),
+  },
   busRoutes: {
+    operator: r.one.operators({
+      from: r.busRoutes.operatorId,
+      to: r.operators.id,
+    }),
     fromStop: r.one.busStops({
       from: r.busRoutes.fromStopId,
       to: r.busStops.id,

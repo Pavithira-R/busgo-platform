@@ -1,0 +1,345 @@
+{
+  "type": "diff",
+  "version": "10",
+  "dialect": "postgres",
+  "id": "97c8d5a2-a6d1-497c-8ddf-8059d701099b",
+  "prevIds": [
+    "e734ae46-04a6-4b7d-bd65-9fa804cb5968"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "operators"
+      ],
+      "writes": [
+        "s|tbl|public.operators",
+        "n|tbl|public.operators",
+        "e|tbl|public.operators",
+        "n|rel|public.operators",
+        "n|type|public.operators",
+        "n|rel|public.operators_pkey",
+        "n|rel|public.operators_name_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bus_routes",
+        "operator_id"
+      ],
+      "writes": [
+        "s|col|public.bus_routes.operator_id",
+        "n|col|public.bus_routes.operator_id",
+        "e|col|public.bus_routes.operator_id"
+      ],
+      "reads": [
+        "n|tbl|public.bus_routes",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "recreate_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "service_type"
+      ],
+      "writes": [
+        "s|enum|public.service_type",
+        "n|enum|public.service_type",
+        "e|enum|public.service_type",
+        "n|type|public.service_type",
+        "s|colprop|public.bus_routes.service_type.type",
+        "s|colprop|public.bus_routes.service_type.default"
+      ],
+      "reads": [
+        "n|sch|public",
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|col|public.bus_routes.service_type"
+      ],
+      "sqlHash": "5eefaf5c896b1d50"
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bus_routes",
+        "total_seats"
+      ],
+      "writes": [
+        "s|colprop|public.bus_routes.total_seats.default"
+      ],
+      "reads": [
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|col|public.bus_routes.total_seats"
+      ],
+      "sqlHash": "66ac21bc3f7f664c"
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "bus_routes",
+        "bus_routes_operator_idx"
+      ],
+      "writes": [
+        "s|idx|public.bus_routes_operator_idx",
+        "n|idx|public.bus_routes_operator_idx",
+        "e|idx|public.bus_routes_operator_idx",
+        "n|rel|public.bus_routes_operator_idx"
+      ],
+      "reads": [
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|col|public.bus_routes.operator_id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "bus_routes"
+      ],
+      "writes": [
+        "s|fk|public.bus_routes.bus_routes_operator_id_operators_id_fkey",
+        "n|fk|public.bus_routes.bus_routes_operator_id_operators_id_fkey",
+        "e|fk|public.bus_routes.bus_routes_operator_id_operators_id_fkey",
+        "n|con|public.bus_routes.bus_routes_operator_id_operators_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|tbl|public.operators",
+        "n|sch|public",
+        "n|col|public.bus_routes.operator_id",
+        "n|col|public.operators.id",
+        "e|uniqueness|public.operators.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "operators",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bus_routes",
+        "name": "operator_id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "operators",
+        "name": "id",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": {
+          "type": "always",
+          "name": "operators_id_seq",
+          "increment": "1",
+          "startWith": "1",
+          "minValue": "1",
+          "maxValue": "2147483647",
+          "cache": 1,
+          "cycle": false
+        },
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "operators",
+        "name": "name",
+        "type": "varchar(100)",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "operators",
+        "name": "phone",
+        "type": "varchar(20)",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "operators",
+        "name": "is_active",
+        "type": "boolean",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "true",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "operators",
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bus_routes",
+        "name": "bus_routes_operator_idx",
+        "nameExplicit": true,
+        "columns": [
+          {
+            "value": "operator_id",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "bus_routes",
+        "name": "bus_routes_operator_id_operators_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "operator_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "operators",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "NO ACTION",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "operators",
+        "name": "operators_pkey",
+        "columns": [
+          "id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "operators",
+        "name": "operators_name_key",
+        "nameExplicit": false,
+        "columns": [
+          "name"
+        ],
+        "nullsNotDistinct": false,
+        "entityType": "uniques"
+      }
+    },
+    {
+      "op": "alter",
+      "key": "enums\u0000[\"public\",\"service_type\"]",
+      "set": {
+        "values": [
+          "normal",
+          "semi_luxury",
+          "luxury",
+          "super_luxury"
+        ]
+      }
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"bus_routes\",\"service_type\"]",
+      "set": {
+        "default": "'normal'"
+      }
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"bus_routes\",\"total_seats\"]",
+      "set": {
+        "default": "50"
+      }
+    }
+  ]
+}

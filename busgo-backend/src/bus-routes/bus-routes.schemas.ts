@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { todayInSriLanka } from '../common/dates.js';
+import { serviceType } from '../db/schema.js';
 
 const stopCode = z
   .string()
@@ -15,7 +16,7 @@ const travelDate = z.iso
 export const searchRoutesSchema = z.object({
   from: stopCode.optional(),
   to: stopCode.optional(),
-  serviceType: z.enum(['standard', 'semi_luxury', 'luxury']).optional(),
+  serviceType: z.enum(serviceType.enumValues).optional(),
   /** When given, each route includes how many seats are free that day. */
   date: travelDate.optional(),
 });
