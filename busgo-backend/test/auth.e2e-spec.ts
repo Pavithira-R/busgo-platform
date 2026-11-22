@@ -146,7 +146,10 @@ describe('Auth (e2e)', () => {
         .set('Authorization', `Bearer ${body.accessToken}`)
         .send({ email: 'other@x.lk', role: 'admin' })
         .expect(200);
-      expect(res.body).toMatchObject({ email: email('locked'), role: 'passenger' });
+      expect(res.body).toMatchObject({
+        email: email('locked'),
+        role: 'passenger',
+      });
     });
   });
 });

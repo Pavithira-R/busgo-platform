@@ -3,7 +3,10 @@ import { z } from 'zod';
 const phone = z
   .string()
   .trim()
-  .regex(/^\+?\d{9,15}$/, 'Phone must be 9-15 digits, optionally starting with +');
+  .regex(
+    /^\+?\d{9,15}$/,
+    'Phone must be 9-15 digits, optionally starting with +',
+  );
 
 export const registerSchema = z.object({
   fullName: z.string().trim().min(2).max(100),

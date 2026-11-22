@@ -23,7 +23,13 @@ export class BusRoutesController {
     return this.busRoutesService.listStops();
   }
 
-  /** Search routes, e.g. ?from=CMB&to=KDY&date=2026-12-01&serviceType=luxury */
+  /** Private bus operators running services on BusGo. */
+  @Get('operators')
+  operators() {
+    return this.busRoutesService.listOperators();
+  }
+
+  /** Search routes, e.g. ?from=CMB&to=KDY&date=2026-12-01&serviceType=luxury&operatorId=2 */
   @Get()
   search(@Query({ schema: searchRoutesSchema }) query: SearchRoutesQuery) {
     return this.busRoutesService.search(query);

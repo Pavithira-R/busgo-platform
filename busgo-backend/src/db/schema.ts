@@ -19,10 +19,12 @@ import {
 
 export const userRole = pgEnum('user_role', ['passenger', 'staff', 'admin']);
 
+// Sri Lankan bus classes. Luxury and Super Luxury are air-conditioned.
 export const serviceType = pgEnum('service_type', [
-  'standard',
+  'normal',
   'semi_luxury',
   'luxury',
+  'super_luxury',
 ]);
 
 export const paymentStatus = pgEnum('payment_status', [
@@ -69,11 +71,25 @@ export const busStops = pgTable('bus_stops', {
   city: varchar('city', { length: 100 }).notNull(),
 });
 
+/** Private bus companies whose services are sold on BusGo. */
+export const operators = pgTable('operators', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar('name', { length: 100 }).notNull().unique(),
+  phone: varchar('phone', { length: 20 }),
+  isActive: boolean('is_active').notNull().default(true),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
 export const busRoutes = pgTable(
   'bus_routes',
   {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
     routeNumber: varchar('route_number', { length: 20 }).notNull(),
+    operatorId: integer('operator_id')
+      .notNull()
+      .references(() => operators.id),
     fromStopId: integer('from_stop_id')
       .notNull()
       .references(() => busStops.id),
@@ -84,13 +100,14 @@ export const busRoutes = pgTable(
     arrivalTime: time('arrival_time').notNull(),
     durationMinutes: integer('duration_minutes').notNull(),
     price: numeric('price', { precision: 10, scale: 2 }).notNull(), // LKR
-    serviceType: serviceType('service_type').notNull().default('standard'),
-    totalSeats: integer('total_seats').notNull().default(48),
+    serviceType: serviceType('service_type').notNull().default('normal'),
+    totalSeats: integer('total_seats').notNull().default(50),
     busNumber: varchar('bus_number', { length: 20 }),
     isActive: boolean('is_active').notNull().default(true),
   },
   (t) => [
     index('bus_routes_from_to_idx').on(t.fromStopId, t.toStopId),
+    index('bus_routes_operator_idx').on(t.operatorId),
     check('bus_routes_different_stops', sql`${t.fromStopId} <> ${t.toStopId}`),
   ],
 );
@@ -115,9 +132,7 @@ export const bookings = pgTable(
     basePrice: numeric('base_price', { precision: 10, scale: 2 }).notNull(),
     taxAmount: numeric('tax_amount', { precision: 10, scale: 2 }).notNull(),
     totalAmount: numeric('total_amount', { precision: 10, scale: 2 }).notNull(),
-    paymentStatus: paymentStatus('payment_status')
-      .notNull()
-      .default('pending'),
+    paymentStatus: paymentStatus('payment_status').notNull().default('pending'),
     bookingStatus: bookingStatus('booking_status')
       .notNull()
       .default('confirmed'),
@@ -160,6 +175,8 @@ export const scanLogs = pgTable(
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type BusStop = typeof busStops.$inferSelect;
+export type Operator = typeof operators.$inferSelect;
+export type NewOperator = typeof operators.$inferInsert;
 export type BusRoute = typeof busRoutes.$inferSelect;
 export type NewBusRoute = typeof busRoutes.$inferInsert;
 export type Booking = typeof bookings.$inferSelect;
