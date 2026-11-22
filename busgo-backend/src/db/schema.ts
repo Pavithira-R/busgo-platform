@@ -112,6 +112,31 @@ export const busRoutes = pgTable(
   ],
 );
 
+/**
+ * Towns along a route where passengers can get on, in travel order,
+ * e.g. Colombo → Kadawatha → Kegalle → Kandy. The start and end bus
+ * stands are the route's own from/to stops and are not repeated here.
+ */
+export const boardingPoints = pgTable(
+  'boarding_points',
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    routeId: integer('route_id')
+      .notNull()
+      .references(() => busRoutes.id, { onDelete: 'cascade' }),
+    name: varchar('name', { length: 100 }).notNull(),
+    /** 1 = first stop after leaving the starting bus stand. */
+    stopOrder: integer('stop_order').notNull(),
+    /** Estimated minutes after the scheduled departure. */
+    minutesFromStart: integer('minutes_from_start').notNull(),
+  },
+  (t) => [
+    uniqueIndex('boarding_points_route_order_uq').on(t.routeId, t.stopOrder),
+    check('boarding_points_order_positive', sql`${t.stopOrder} > 0`),
+    check('boarding_points_minutes_positive', sql`${t.minutesFromStart} > 0`),
+  ],
+);
+
 export const bookings = pgTable(
   'bookings',
   {
@@ -176,6 +201,8 @@ export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type BusStop = typeof busStops.$inferSelect;
 export type Operator = typeof operators.$inferSelect;
+export type BoardingPoint = typeof boardingPoints.$inferSelect;
+export type NewBoardingPoint = typeof boardingPoints.$inferInsert;
 export type NewOperator = typeof operators.$inferInsert;
 export type BusRoute = typeof busRoutes.$inferSelect;
 export type NewBusRoute = typeof busRoutes.$inferInsert;
