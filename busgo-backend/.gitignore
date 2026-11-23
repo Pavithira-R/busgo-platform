@@ -13,3 +13,6 @@ coverage/
 .env.*
 !.env.example
 *.tsbuildinfo
+
+# Local email previews
+mail-outbox/

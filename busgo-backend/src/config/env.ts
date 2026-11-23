@@ -11,6 +11,11 @@ export const envSchema = z.object({
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
   // How long a login token lasts, e.g. 15m, 1h, 1d
   JWT_TTL: z.string().default('1h'),
+  // Email: "file" saves emails to MAIL_DIR to open in a browser (local
+  // development); "log" only prints them. Real sending comes with AWS.
+  MAIL_TRANSPORT: z.enum(['file', 'log']).default('file'),
+  MAIL_DIR: z.string().default('mail-outbox'),
+  MAIL_FROM: z.string().default('BusGo Tickets <noreply@busgo.local>'),
 });
 
 export type Env = z.infer<typeof envSchema>;

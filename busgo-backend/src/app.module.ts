@@ -3,6 +3,7 @@ import { AuthenticationModule, type Duration } from '@nestjs/authentication';
 import { AuthorizationModule } from '@nestjs/authorization';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DrizzleModule } from '@nestjs/drizzle';
+import { LogMailTransport, MailModule } from '@nestjs/mail';
 import { createObserveModule } from '@nestjs/observe';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { AppController } from './app.controller.js';
@@ -12,6 +13,7 @@ import { BookingsModule } from './bookings/bookings.module.js';
 import { BusRoutesModule } from './bus-routes/bus-routes.module.js';
 import { envSchema } from './config/env.js';
 import { relations } from './db/relations.js';
+import { PreviewMailTransport } from './mail/preview-mail.transport.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -40,6 +42,17 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     }),
     // Every route must declare who may use it: @Can(...), @Can.Anyone() or @Public().
     AuthorizationModule.forRoot(),
+    MailModule.forRootAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        from: config.getOrThrow<string>('MAIL_FROM'),
+        transport:
+          config.get('MAIL_TRANSPORT') === 'log'
+            ? new LogMailTransport({ body: false })
+            : new PreviewMailTransport(config.getOrThrow<string>('MAIL_DIR')),
+      }),
+    }),
     AuthModule,
     BusRoutesModule,
     BookingsModule,
