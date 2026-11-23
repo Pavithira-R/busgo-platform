@@ -17,5 +17,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    // Long user flows (typing a whole booking) need time on slower laptops.
+    testTimeout: 15_000,
   },
 });

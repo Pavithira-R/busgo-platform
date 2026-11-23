@@ -130,3 +130,17 @@ export interface NewBooking {
   passengerIdNumber?: string;
   paymentMethod: PaymentMethod;
 }
+
+/** What the passenger gets back if they cancel now. */
+export type CancellationQuote =
+  | {
+      canCancel: true;
+      hoursBeforeDeparture: number;
+      fare: number;
+      serviceFee: number;
+      cancellationPercent: number;
+      cancellationFee: number;
+      processingFee: number;
+      refundAmount: number;
+    }
+  | { canCancel: false; reason: string };

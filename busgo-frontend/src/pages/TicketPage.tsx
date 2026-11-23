@@ -1,19 +1,15 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useParams } from 'react-router';
-import { Button, ErrorMessage, Spinner } from '../components/ui';
+import { CancelBooking } from '../booking/CancelBooking';
 import { useTicket } from '../booking/queries';
+import { TicketStatusBadge } from '../booking/TicketStatusBadge';
+import { Button, ErrorMessage, Spinner } from '../components/ui';
 import { ApiError } from '../lib/api';
-import { formatDate } from '../lib/dates';
+import { formatDate, hasDeparted } from '../lib/dates';
 import { formatLkr } from '../lib/format';
-import type { BookingStatus, Ticket } from '../lib/types';
+import type { Ticket } from '../lib/types';
 import { ServiceTypeBadge } from '../search/RouteCard';
-
-const statusStyles: Record<BookingStatus, string> = {
-  confirmed: 'bg-brand-50 text-brand-800 dark:bg-brand-900 dark:text-brand-100',
-  cancelled: 'bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-200',
-  used: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-  expired: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-};
 
 /** /tickets/:ticketId: the e-ticket with its QR code, ready to show or print. */
 export function TicketPage() {
@@ -48,7 +44,9 @@ function TicketView({
   justBooked: boolean;
 }) {
   const { t, i18n } = useTranslation();
+  const [justCancelled, setJustCancelled] = useState(false);
   const { route } = ticket;
+  const departed = hasDeparted(ticket.travelDate, route.departureTime);
   const details: [string, string][] = [
     [t('ticket.passenger'), ticket.passenger.name],
     [
@@ -73,7 +71,17 @@ function TicketView({
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5">
-      {justBooked && (
+      {justCancelled && ticket.cancellation && (
+        <p
+          role="status"
+          className="rounded-lg bg-brand-50 px-4 py-3 text-sm text-brand-800 ring-1 ring-brand-200 print:hidden dark:bg-brand-900 dark:text-brand-100 dark:ring-brand-800"
+        >
+          {t('cancel.done', {
+            amount: formatLkr(ticket.cancellation.refundAmount),
+          })}
+        </p>
+      )}
+      {justBooked && !justCancelled && (
         <p
           role="status"
           className="rounded-lg bg-brand-50 px-4 py-3 text-sm text-brand-800 ring-1 ring-brand-200 print:hidden dark:bg-brand-900 dark:text-brand-100 dark:ring-brand-800"
@@ -90,11 +98,7 @@ function TicketView({
               {route.from.city} → {route.to.city}
             </h1>
           </div>
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-semibold ${statusStyles[ticket.status]}`}
-          >
-            {t(`ticket.status.${ticket.status}`)}
-          </span>
+          <TicketStatusBadge status={ticket.status} departed={departed} />
         </header>
 
         <div className="grid gap-6 p-5 sm:grid-cols-[1fr_auto]">
@@ -166,9 +170,17 @@ function TicketView({
       </article>
 
       <div className="flex flex-wrap gap-3 print:hidden">
-        <Button variant="secondary" onClick={() => window.print()}>
-          {t('ticket.print')}
-        </Button>
+        {ticket.status === 'confirmed' && (
+          <Button variant="secondary" onClick={() => window.print()}>
+            {t('ticket.print')}
+          </Button>
+        )}
+        <Link
+          to="/bookings"
+          className="inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-semibold text-brand-700 hover:underline dark:text-brand-200"
+        >
+          {t('nav.myBookings')}
+        </Link>
         <Link
           to="/"
           className="inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-semibold text-brand-700 hover:underline dark:text-brand-200"
@@ -176,6 +188,13 @@ function TicketView({
           {t('ticket.bookAnother')}
         </Link>
       </div>
+
+      {ticket.status === 'confirmed' && !departed && (
+        <CancelBooking
+          ticketId={ticket.ticketId}
+          onCancelled={() => setJustCancelled(true)}
+        />
+      )}
     </div>
   );
 }

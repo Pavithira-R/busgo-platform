@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { BookingPage } from './pages/BookingPage';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
+import { MyBookingsPage } from './pages/MyBookingsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { RegisterPage } from './pages/RegisterPage';
@@ -25,6 +26,14 @@ export default function App() {
           element={
             <RequireAuth>
               <BookingPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="bookings"
+          element={
+            <RequireAuth>
+              <MyBookingsPage />
             </RequireAuth>
           }
         />
