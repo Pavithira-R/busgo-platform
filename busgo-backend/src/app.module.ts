@@ -14,6 +14,7 @@ import { BusRoutesModule } from './bus-routes/bus-routes.module.js';
 import { envSchema } from './config/env.js';
 import { relations } from './db/relations.js';
 import { PreviewMailTransport } from './mail/preview-mail.transport.js';
+import { QrModule } from './qr/qr.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -56,6 +57,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     AuthModule,
     BusRoutesModule,
     BookingsModule,
+    QrModule,
     // Optional telemetry. Sends nothing until OBSERVE_APP_KEY is set in .env.
     ObserveModule.forRoot({
       appKey: process.env.OBSERVE_APP_KEY ?? 'YOUR_APP_KEY',
