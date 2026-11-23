@@ -10,11 +10,14 @@ export interface TicketQrPayload {
   passenger: string;
 }
 
+const OPTIONS = { errorCorrectionLevel: 'M', margin: 2, width: 320 } as const;
+
 /** Renders the payload as a PNG data URL for <img src="...">. */
 export function qrDataUrl(payload: TicketQrPayload): Promise<string> {
-  return QRCode.toDataURL(JSON.stringify(payload), {
-    errorCorrectionLevel: 'M',
-    margin: 2,
-    width: 320,
-  });
+  return QRCode.toDataURL(JSON.stringify(payload), OPTIONS);
+}
+
+/** Renders the payload as PNG bytes (for email attachments). */
+export function qrPng(payload: TicketQrPayload): Promise<Buffer> {
+  return QRCode.toBuffer(JSON.stringify(payload), { ...OPTIONS, type: 'png' });
 }
