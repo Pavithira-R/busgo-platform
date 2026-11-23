@@ -49,3 +49,22 @@ export function mockFetch(status: number, body: unknown) {
     }),
   );
 }
+
+/**
+ * Makes fetch answer by API path, e.g. { '/routes/stops': [...] }.
+ * The longest matching path wins; anything else is a 404.
+ */
+export function mockApi(responses: Record<string, unknown>) {
+  const paths = Object.keys(responses).sort((a, b) => b.length - a.length);
+  return vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+    const url = String(input);
+    const path = paths.find((p) => url.startsWith(`/api${p}`));
+    return new Response(
+      JSON.stringify(path ? responses[path] : { message: 'Not found' }),
+      {
+        status: path ? 200 : 404,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  });
+}
