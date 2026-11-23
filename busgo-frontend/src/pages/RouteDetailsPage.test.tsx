@@ -46,12 +46,26 @@ describe('RouteDetailsPage', () => {
     expect(
       screen.getByRole('link', { name: /Back to results/ }),
     ).toHaveAttribute('href', '/search?from=CMB&to=KDY&date=2026-12-03');
+    expect(
+      screen.getByRole('link', { name: 'Choose your seat' }),
+    ).toHaveAttribute('href', '/book/1?date=2026-12-03');
   });
 
   it('marks a bus that has already left today', async () => {
     renderDetails('/routes/1?date=2026-12-01');
     expect(await screen.findByText('Departed')).toBeInTheDocument();
     expect(screen.queryByText(/seats free/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Choose your seat' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('cannot be booked when sold out', async () => {
+    renderDetails('/routes/1?date=2026-12-03', 0);
+    expect(await screen.findByText('Sold out')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Choose your seat' }),
+    ).not.toBeInTheDocument();
   });
 
   it('explains when the bus does not exist', async () => {
