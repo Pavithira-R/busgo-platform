@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { RegisterPage } from './pages/RegisterPage';
+import { RouteDetailsPage } from './pages/RouteDetailsPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 
 /** All pages. Each feature adds its routes here. */
@@ -16,6 +17,7 @@ export default function App() {
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="search" element={<SearchResultsPage />} />
+        <Route path="routes/:id" element={<RouteDetailsPage />} />
         <Route
           path="login"
           element={
