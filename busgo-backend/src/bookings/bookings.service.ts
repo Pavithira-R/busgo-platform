@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { AuthorizationService } from '@nestjs/authorization';
 import { InjectDrizzle } from '@nestjs/drizzle';
-import { and, desc, eq, inArray } from 'drizzle-orm';
+import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import {
   BusRoutesService,
   type RouteView,
@@ -212,6 +212,43 @@ export class BookingsService {
     const [ticket] = await this.toTickets([cancelled]);
     this.ticketMailer.sendCancellation(ticket);
     return ticket;
+  }
+
+  /**
+   * The operator cancels a day's trip: every confirmed booking is cancelled
+   * with a full refund (service fee included) and the passenger is emailed.
+   */
+  async cancelTripByOperator(
+    routeId: number,
+    travelDate: string,
+    reason: string,
+  ): Promise<{ cancelledBookings: number; totalRefunded: number }> {
+    const cancelled = await this.db
+      .update(bookings)
+      .set({
+        bookingStatus: 'cancelled',
+        cancelledAt: new Date(),
+        cancellationCharge: '0.00',
+        refundAmount: sql`${bookings.totalAmount}`,
+        paymentStatus: 'refunded',
+      })
+      .where(
+        and(
+          eq(bookings.routeId, routeId),
+          eq(bookings.travelDate, travelDate),
+          eq(bookings.bookingStatus, 'confirmed'),
+        ),
+      )
+      .returning();
+
+    for (const ticket of await this.toTickets(cancelled)) {
+      this.ticketMailer.sendTripCancelled(ticket, reason);
+    }
+    const totalRefunded = cancelled.reduce(
+      (sum, b) => sum + Number(b.totalAmount),
+      0,
+    );
+    return { cancelledBookings: cancelled.length, totalRefunded };
   }
 
   /** A booking as a ticket (without QR code), for other modules such as gate scanning. */

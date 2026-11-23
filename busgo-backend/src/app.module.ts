@@ -6,6 +6,7 @@ import { DrizzleModule } from '@nestjs/drizzle';
 import { LogMailTransport, MailModule } from '@nestjs/mail';
 import { createObserveModule } from '@nestjs/observe';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import { AdminModule } from './admin/admin.module.js';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { AuthModule } from './auth/auth.module.js';
@@ -58,6 +59,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     BusRoutesModule,
     BookingsModule,
     QrModule,
+    AdminModule,
     // Optional telemetry. Sends nothing until OBSERVE_APP_KEY is set in .env.
     ObserveModule.forRoot({
       appKey: process.env.OBSERVE_APP_KEY ?? 'YOUR_APP_KEY',

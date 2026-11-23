@@ -5,6 +5,7 @@
  */
 import { seatCount } from '../bus-routes/seat-layout.js';
 import { hashPassword } from '../common/password.js';
+import { minutesBetween } from '../common/time.js';
 import type { Database } from './relations.js';
 import {
   boardingPoints,
@@ -132,16 +133,6 @@ function boardingTowns(from: string, to: string) {
   if (forward) return forward;
   const reverse = corridors[`${to}-${from}`] ?? [];
   return reverse.map(([town, f]): [string, number] => [town, 1 - f]).reverse();
-}
-
-/** Minutes between two HH:MM times, crossing midnight if needed. */
-function minutesBetween(departs: string, arrives: string): number {
-  const toMin = (t: string) => {
-    const [h, m] = t.split(':').map(Number);
-    return h * 60 + m;
-  };
-  const diff = toMin(arrives) - toMin(departs);
-  return diff > 0 ? diff : diff + 24 * 60;
 }
 
 export async function seed(db: Database) {
