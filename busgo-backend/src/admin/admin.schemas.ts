@@ -125,3 +125,19 @@ export const userListQuerySchema = z.object({
   ...pagination,
 });
 export type UserListQuery = z.infer<typeof userListQuerySchema>;
+
+// ---------- Users ----------
+
+export const createStaffSchema = z.object({
+  fullName: z.string().trim().min(2).max(100),
+  email: z.email().max(150),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(100),
+  phone: mobileSchema.optional(),
+});
+export type CreateStaffDto = z.infer<typeof createStaffSchema>;
+
+export const userStatusSchema = z.object({ isActive: z.boolean() });
+export type UserStatusDto = z.infer<typeof userStatusSchema>;
