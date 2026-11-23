@@ -2,7 +2,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Mailer } from '@nestjs/mail';
 import type { TicketView } from './bookings.service.js';
 import { qrPng, type TicketQrPayload } from './qr.js';
-import { cancellationEmail, ticketEmail } from './ticket-emails.js';
+import {
+  cancellationEmail,
+  ticketEmail,
+  tripCancelledEmail,
+} from './ticket-emails.js';
 
 /**
  * Emails passengers about their bookings. Sending happens in the
@@ -20,6 +24,12 @@ export class TicketMailer {
 
   sendCancellation(ticket: TicketView): void {
     void this.deliver(ticket, () => Promise.resolve(cancellationEmail(ticket)));
+  }
+
+  sendTripCancelled(ticket: TicketView, reason: string): void {
+    void this.deliver(ticket, () =>
+      Promise.resolve(tripCancelledEmail(ticket, reason)),
+    );
   }
 
   private async deliver(

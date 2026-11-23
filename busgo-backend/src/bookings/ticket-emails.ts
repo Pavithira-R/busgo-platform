@@ -157,3 +157,34 @@ export function cancellationEmail(t: TicketView): MailContent {
 
   return { subject, html: layout('Booking cancelled', body), text };
 }
+
+/** When the operator cancels the trip: a full refund, service fee included. */
+export function tripCancelledEmail(t: TicketView, reason: string): MailContent {
+  const subject = `Trip cancelled by the operator: ${t.ticketId}, full refund ${formatLkr(t.price.total)}`;
+  const body = html` <p style="margin:0 0 16px">
+      Hi ${t.passenger.name}, we're sorry: ${t.route.operator.name} has
+      cancelled this trip. You will get a full refund, including the service
+      fee.
+    </p>
+    <p style="margin:0 0 16px"><strong>Reason:</strong> ${reason}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      ${tripRows(t)}
+    </table>
+    <h3 style="font-size:15px;margin:20px 0 8px">Refund</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      ${row('Full refund', formatLkr(t.price.total))}
+    </table>
+    <p style="font-size:12px;color:#64748b;margin:20px 0 0">
+      Refunds go back to your original payment method within about 3 working
+      days, plus 2–4 working days for your bank.
+    </p>`;
+
+  const text = [
+    `Hi ${t.passenger.name}, ${t.route.operator.name} has cancelled your trip (${t.ticketId}).`,
+    `Reason: ${reason}`,
+    `Route: ${t.route.from.city} -> ${t.route.to.city}, ${formatTravelDate(t.travelDate)}`,
+    `Full refund: ${formatLkr(t.price.total)} (service fee included)`,
+  ].join('\n');
+
+  return { subject, html: layout('Trip cancelled', body), text };
+}
