@@ -214,6 +214,12 @@ export class BookingsService {
     return ticket;
   }
 
+  /** A booking as a ticket (without QR code), for other modules such as gate scanning. */
+  async viewOf(booking: Booking): Promise<TicketView> {
+    const [ticket] = await this.toTickets([booking]);
+    return ticket;
+  }
+
   // ---------- helpers ----------
 
   private async quoteFor(booking: Booking) {
