@@ -71,7 +71,7 @@ export function Layout() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="bg-brand-700 text-white shadow">
+      <header className="bg-brand-700 text-white shadow print:hidden">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
           <Link
             to="/"
@@ -130,7 +130,7 @@ export function Layout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500 dark:border-slate-800">
+      <footer className="border-t print:hidden border-slate-200 py-6 text-center text-sm text-slate-500 dark:border-slate-800">
         <p>
           {t('common.appName')} · {t('footer.tagline')}
         </p>

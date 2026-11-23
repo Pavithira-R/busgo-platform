@@ -50,21 +50,37 @@ export function mockFetch(status: number, body: unknown) {
   );
 }
 
+const REPLY = Symbol('reply');
+
+/** A response with a status other than 200, for {@link mockApi}. */
+export function reply(status: number, body: unknown) {
+  return { [REPLY]: true, status, body };
+}
+
 /**
  * Makes fetch answer by API path, e.g. { '/routes/stops': [...] }.
+ * Prefix a path with a method for other requests: { 'POST /bookings': ... }.
  * The longest matching path wins; anything else is a 404.
  */
 export function mockApi(responses: Record<string, unknown>) {
-  const paths = Object.keys(responses).sort((a, b) => b.length - a.length);
-  return vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
-    const url = String(input);
-    const path = paths.find((p) => url.startsWith(`/api${p}`));
-    return new Response(
-      JSON.stringify(path ? responses[path] : { message: 'Not found' }),
-      {
-        status: path ? 200 : 404,
+  const keys = Object.keys(responses).sort((a, b) => b.length - a.length);
+  return vi
+    .spyOn(globalThis, 'fetch')
+    .mockImplementation(async (input, init) => {
+      const method = init?.method ?? 'GET';
+      const url = String(input);
+      const key = keys.find((k) => {
+        const [m, path] = k.includes(' ') ? k.split(' ') : ['GET', k];
+        return m === method && url.startsWith(`/api${path}`);
+      });
+      const value = key ? responses[key] : reply(404, { message: 'Not found' });
+      const { status, body } =
+        value && typeof value === 'object' && REPLY in value
+          ? (value as unknown as { status: number; body: unknown })
+          : { status: 200, body: value };
+      return new Response(JSON.stringify(body), {
+        status,
         headers: { 'Content-Type': 'application/json' },
-      },
-    );
-  });
+      });
+    });
 }
