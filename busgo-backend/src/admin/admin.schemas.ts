@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { mobileSchema } from '../common/sri-lanka.js';
-import { serviceType } from '../db/schema.js';
+import { bookingStatus, serviceType } from '../db/schema.js';
 
 export const idParamSchema = z.coerce.number().int().positive();
 
@@ -90,3 +90,38 @@ export const cancelTripSchema = z.object({
   reason: z.string().trim().min(3).max(200),
 });
 export type CancelTripDto = z.infer<typeof cancelTripSchema>;
+
+// ---------- Insights ----------
+
+const date = z.iso.date();
+
+export const dashboardQuerySchema = z
+  .object({ from: date.optional(), to: date.optional() })
+  .refine((q) => !q.from || !q.to || q.from <= q.to, {
+    message: '"from" must be on or before "to"',
+    path: ['from'],
+  });
+export type DashboardQuery = z.infer<typeof dashboardQuerySchema>;
+
+const pagination = {
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+};
+
+export const bookingListQuerySchema = z.object({
+  status: z.enum(bookingStatus.enumValues).optional(),
+  travelDate: date.optional(),
+  routeId: z.coerce.number().int().positive().optional(),
+  operatorId: z.coerce.number().int().positive().optional(),
+  /** Ticket ID, passenger name, email or phone. */
+  search: z.string().trim().min(2).max(100).optional(),
+  ...pagination,
+});
+export type BookingListQuery = z.infer<typeof bookingListQuerySchema>;
+
+export const userListQuerySchema = z.object({
+  /** Name, email or phone. */
+  search: z.string().trim().min(2).max(100).optional(),
+  ...pagination,
+});
+export type UserListQuery = z.infer<typeof userListQuerySchema>;
