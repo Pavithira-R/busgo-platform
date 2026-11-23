@@ -132,6 +132,32 @@ export class BusRoutesService {
     };
   }
 
+  /** Routes for the admin panel: including deactivated ones, with their status. */
+  async listForAdmin(filter: { operatorId?: number; routeId?: number }) {
+    const conditions: SQL[] = [];
+    if (filter.operatorId) {
+      conditions.push(eq(busRoutes.operatorId, filter.operatorId));
+    }
+    if (filter.routeId) conditions.push(eq(busRoutes.id, filter.routeId));
+    const rows = await this.db
+      .select({
+        ...routeColumns,
+        isActive: busRoutes.isActive,
+        operatorActive: operators.isActive,
+      })
+      .from(busRoutes)
+      .innerJoin(operators, eq(busRoutes.operatorId, operators.id))
+      .innerJoin(fromStop, eq(busRoutes.fromStopId, fromStop.id))
+      .innerJoin(toStop, eq(busRoutes.toStopId, toStop.id))
+      .where(and(...conditions))
+      .orderBy(asc(fromStop.code), asc(busRoutes.departureTime));
+    return rows.map((r) => ({
+      ...present(r),
+      isActive: r.isActive,
+      operatorActive: r.operatorActive,
+    }));
+  }
+
   /**
    * Routes by id for showing existing bookings, including routes that
    * have since been deactivated.
