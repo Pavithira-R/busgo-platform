@@ -1,4 +1,11 @@
-import { isValidNic, mobile, nic, optional } from './validation';
+import {
+  cardExpiry,
+  cardNumber,
+  isValidNic,
+  mobile,
+  nic,
+  optional,
+} from './validation';
 
 describe('validation', () => {
   it('normalises Sri Lankan mobile numbers', () => {
@@ -27,5 +34,25 @@ describe('optional fields', () => {
     const result = optional(mobile).safeParse('0112345678');
     expect(result.success).toBe(false);
     expect(result.error?.issues[0].message).toBe('errors.mobile');
+  });
+});
+
+describe('demo card checks', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-12-01T04:30:00Z'));
+  });
+  afterEach(() => vi.useRealTimers());
+
+  it('accepts a test card number and rejects typos', () => {
+    expect(cardNumber.parse('4111 1111 1111 1111')).toBe('4111111111111111');
+    expect(cardNumber.safeParse('4111 1111 1111 1112').success).toBe(false);
+    expect(cardNumber.safeParse('4111').success).toBe(false);
+  });
+
+  it('rejects expired cards', () => {
+    expect(cardExpiry.safeParse('12/26').success).toBe(true);
+    expect(cardExpiry.safeParse('11/26').success).toBe(false);
+    expect(cardExpiry.safeParse('13/30').success).toBe(false);
   });
 });
