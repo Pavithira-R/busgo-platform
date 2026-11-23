@@ -1,4 +1,4 @@
-import { addMinutes } from './time.js';
+import { addMinutes, minutesBetween } from './time.js';
 
 describe('addMinutes', () => {
   it('adds minutes within the day', () => {
@@ -9,5 +9,15 @@ describe('addMinutes', () => {
   it('wraps past midnight for night buses', () => {
     expect(addMinutes('21:00', 240)).toBe('01:00');
     expect(addMinutes('23:30', 30)).toBe('00:00');
+  });
+});
+
+describe('minutesBetween', () => {
+  it('measures same-day journeys', () => {
+    expect(minutesBetween('06:00', '09:30')).toBe(210);
+  });
+
+  it('measures overnight journeys', () => {
+    expect(minutesBetween('21:00', '05:00')).toBe(480);
   });
 });
