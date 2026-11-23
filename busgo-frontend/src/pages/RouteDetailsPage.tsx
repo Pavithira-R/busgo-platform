@@ -195,6 +195,14 @@ function Details({ route, date }: { route: RouteDetails; date: string }) {
                 </dd>
               </div>
             </dl>
+            {!departed && seats.data && seats.data.availableSeats > 0 && (
+              <Link
+                to={`/book/${route.id}?date=${date}`}
+                className="mt-5 flex w-full items-center justify-center rounded-lg bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-800"
+              >
+                {t('route.chooseSeat')}
+              </Link>
+            )}
           </Card>
 
           <Card>
