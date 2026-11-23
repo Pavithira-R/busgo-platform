@@ -1,5 +1,6 @@
 import { INestApplication, StandardSchemaValidationPipe } from '@nestjs/common';
 import { getDrizzleToken } from '@nestjs/drizzle';
+import { InMemoryMailTransport, MailTransport } from '@nestjs/mail';
 import { Test } from '@nestjs/testing';
 import { inArray, like } from 'drizzle-orm';
 import request from 'supertest';
@@ -23,6 +24,13 @@ describe('Bookings (e2e)', () => {
   let kadawathaId: number;
   let otherRoutePointId: number;
   const travelDate = addDays(todayInSriLanka(), 10);
+  const mailbox = new InMemoryMailTransport();
+
+  /** Waits for the background email to arrive (sending doesn't block booking). */
+  const emailTo = (address: string, subject: RegExp) =>
+    vi.waitFor(() => mailbox.assertSent({ to: address, subject }), {
+      timeout: 5000,
+    });
 
   const http = () => request(app.getHttpServer());
   const auth = (token: string) => ({ Authorization: `Bearer ${token}` });
@@ -55,7 +63,11 @@ describe('Bookings (e2e)', () => {
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      // Catch emails in memory instead of writing them to mail-outbox/.
+      .overrideProvider(MailTransport)
+      .useValue(mailbox)
+      .compile();
     app = moduleRef.createNestApplication();
     app.useGlobalPipes(new StandardSchemaValidationPipe());
     await app.init();
@@ -129,6 +141,16 @@ describe('Bookings (e2e)', () => {
       });
       expect(ticket.boarding.time).toMatch(/^\d{2}:\d{2}$/);
       expect(ticket.qrCode).toMatch(/^data:image\/png;base64,/);
+    });
+
+    it('emails the e-ticket with the QR code to the passenger', async () => {
+      const mail = await emailTo('alice@example.lk', /e-ticket/);
+      expect(mail.subject).toContain(ticket.ticketId);
+      expect(mail.html).toContain('Kadawatha');
+      expect(mail.html).toContain('LKR 1,050.00');
+      expect(mail.attachments).toEqual([
+        expect.objectContaining({ cid: 'ticket-qr', contentType: 'image/png' }),
+      ]);
     });
 
     it('marks the seat as booked on the seat map', async () => {
@@ -317,6 +339,14 @@ describe('Bookings (e2e)', () => {
         (s: { number: string }) => s.number === 'H1',
       );
       expect(seat.status).toBe('available');
+    });
+
+    it('emails a cancellation confirmation with the refund', async () => {
+      const mail = await emailTo(
+        'alice@example.lk',
+        new RegExp(`${ticketId} cancelled`),
+      );
+      expect(mail.subject).toContain('refund LKR 602.50');
     });
 
     it('cannot cancel twice', async () => {
