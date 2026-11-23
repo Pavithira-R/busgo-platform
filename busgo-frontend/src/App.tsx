@@ -10,6 +10,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { RegisterPage } from './pages/RegisterPage';
 import { RouteDetailsPage } from './pages/RouteDetailsPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
+import { TicketPage } from './pages/TicketPage';
 
 /** All pages. Each feature adds its routes here. */
 export default function App() {
@@ -24,6 +25,14 @@ export default function App() {
           element={
             <RequireAuth>
               <BookingPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="tickets/:ticketId"
+          element={
+            <RequireAuth>
+              <TicketPage />
             </RequireAuth>
           }
         />
