@@ -257,6 +257,11 @@ export class BookingsService {
     return ticket;
   }
 
+  /** Several bookings as tickets (without QR codes), e.g. for admin lists. */
+  viewsOf(rows: Booking[]): Promise<TicketView[]> {
+    return this.toTickets(rows);
+  }
+
   // ---------- helpers ----------
 
   private async quoteFor(booking: Booking) {
