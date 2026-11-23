@@ -39,13 +39,23 @@ export function Layout() {
         </NavLink>
       )}
       {user ? (
-        <button
-          type="button"
-          onClick={logout}
-          className={linkClass({ isActive: false })}
-        >
-          {t('nav.logout')}
-        </button>
+        <>
+          <NavLink
+            to="/profile"
+            className={linkClass}
+            onClick={close}
+            title={t('nav.profile')}
+          >
+            {user.fullName.split(' ')[0]}
+          </NavLink>
+          <button
+            type="button"
+            onClick={logout}
+            className={linkClass({ isActive: false })}
+          >
+            {t('nav.logout')}
+          </button>
+        </>
       ) : (
         <>
           <NavLink to="/login" className={linkClass} onClick={close}>
