@@ -22,6 +22,7 @@ import { type CreateBookingDto, MAX_DAYS_AHEAD } from './bookings.schemas.js';
 import { cancellationQuote, priceFor } from './pricing.js';
 import { qrDataUrl, type TicketQrPayload } from './qr.js';
 import { generateTicketId } from './ticket-id.js';
+import { TicketMailer } from './ticket-mailer.service.js';
 
 /** A booking as the API returns it. */
 export interface TicketView {
@@ -76,6 +77,7 @@ export class BookingsService {
     @InjectDrizzle() private readonly db: Database,
     private readonly busRoutes: BusRoutesService,
     private readonly authorization: AuthorizationService,
+    private readonly ticketMailer: TicketMailer,
   ) {}
 
   async create(user: PublicUser, dto: CreateBookingDto): Promise<TicketView> {
@@ -142,7 +144,9 @@ export class BookingsService {
           .insert(bookings)
           .values({ ...values, ticketId, qrPayload })
           .returning();
-        return this.toTicket(booking, route, { withQr: true });
+        const ticket = await this.toTicket(booking, route, { withQr: true });
+        this.ticketMailer.sendTicket(ticket, qrPayload);
+        return ticket;
       } catch (err) {
         const { code, constraint } = pgError(err);
         if (code !== PG_UNIQUE_VIOLATION) throw err;
@@ -206,6 +210,7 @@ export class BookingsService {
       throw new ConflictException('This booking can no longer be cancelled');
     }
     const [ticket] = await this.toTickets([cancelled]);
+    this.ticketMailer.sendCancellation(ticket);
     return ticket;
   }
 
