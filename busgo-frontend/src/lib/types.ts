@@ -74,3 +74,59 @@ export interface SeatMap {
   availableSeats: number;
   seats: { number: string; status: 'available' | 'booked' }[];
 }
+
+/** Simulated payment: no real money is taken. */
+export type PaymentMethod = 'card' | 'ez_cash' | 'bank_transfer';
+export type BookingStatus = 'confirmed' | 'cancelled' | 'used' | 'expired';
+
+/** A booking / e-ticket as the API returns it. */
+export interface Ticket {
+  ticketId: string;
+  status: BookingStatus;
+  paymentStatus: 'pending' | 'paid' | 'refunded' | 'failed';
+  paymentMethod: PaymentMethod | null;
+  travelDate: string;
+  seatNumber: string;
+  route: Pick<
+    RouteSummary,
+    | 'id'
+    | 'routeNumber'
+    | 'operator'
+    | 'from'
+    | 'to'
+    | 'departureTime'
+    | 'arrivalTime'
+    | 'serviceType'
+    | 'busNumber'
+  >;
+  /** Where to get on, with the estimated time the bus arrives there. */
+  boarding: { name: string; time: string; isStartingStand: boolean };
+  passenger: {
+    name: string;
+    email: string;
+    phone: string | null;
+    idNumber: string | null;
+  };
+  price: { fare: number; serviceFee: number; total: number };
+  cancellation: {
+    cancelledAt: string;
+    charge: number;
+    refundAmount: number;
+  } | null;
+  bookedAt: string;
+  /** PNG data URL, included when viewing a single ticket. */
+  qrCode?: string;
+}
+
+export interface NewBooking {
+  routeId: number;
+  travelDate: string;
+  seatNumber: string;
+  /** Leave out to board at the starting bus stand. */
+  boardingPointId?: number;
+  passengerName: string;
+  passengerEmail: string;
+  passengerPhone: string;
+  passengerIdNumber?: string;
+  paymentMethod: PaymentMethod;
+}
