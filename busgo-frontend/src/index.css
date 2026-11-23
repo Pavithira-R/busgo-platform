@@ -1,1 +1,33 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+/* BusGo theme: teal brand (matches the e-ticket emails). */
+@theme {
+  --color-brand-50: var(--color-teal-50);
+  --color-brand-100: var(--color-teal-100);
+  --color-brand-200: var(--color-teal-200);
+  --color-brand-500: var(--color-teal-500);
+  --color-brand-600: var(--color-teal-600);
+  --color-brand-700: var(--color-teal-700);
+  --color-brand-800: var(--color-teal-800);
+  --color-brand-900: var(--color-teal-900);
+
+  /* Noto fonts cover English, Sinhala and Tamil consistently. */
+  --font-sans:
+    'Noto Sans', 'Noto Sans Sinhala', 'Noto Sans Tamil', ui-sans-serif,
+    system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: light dark;
+  }
+
+  body {
+    @apply bg-slate-100 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  }
+
+  /* Visible focus for keyboard users everywhere. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-600;
+  }
+}
