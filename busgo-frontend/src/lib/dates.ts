@@ -12,6 +12,11 @@ export function todayInSriLanka(now: Date = new Date()): string {
   );
 }
 
+/** The Sri Lankan date of a server timestamp (ISO, or "2026-11-23 22:10:08+05:30"). */
+export function dateInSriLanka(timestamp: string): string {
+  return todayInSriLanka(new Date(timestamp.replace(' ', 'T')));
+}
+
 export function addDays(date: string, days: number): string {
   const d = new Date(`${date}T00:00:00Z`);
   d.setUTCDate(d.getUTCDate() + days);

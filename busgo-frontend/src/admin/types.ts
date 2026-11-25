@@ -1,5 +1,5 @@
 // Shapes returned by the admin API (/api/admin/...).
-import type { RouteSummary, ServiceType } from '../lib/types';
+import type { BookingStatus, RouteSummary, ServiceType } from '../lib/types';
 
 export interface Dashboard {
   range: { from: string; to: string };
@@ -79,4 +79,43 @@ export type NewRouteInput = RouteInput & { fromCode: string; toCode: string };
 export interface CancelTripResult {
   cancelledBookings: number;
   totalRefunded: number;
+}
+
+/** One page of a long list. */
+export interface Page<T> {
+  items: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface AdminPassenger {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  isActive: boolean;
+  createdAt: string;
+  /** Number of bookings made. */
+  bookings: number;
+  /** Timestamp of the latest booking, or null if none. */
+  lastBookedAt: string | null;
+}
+
+export interface StaffMember {
+  id: number;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  role: 'staff' | 'admin';
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface BookingFilters {
+  search?: string;
+  status?: BookingStatus;
+  travelDate?: string;
+  operatorId?: number;
+  page: number;
 }
