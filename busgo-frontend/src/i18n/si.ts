@@ -121,12 +121,8 @@ export const si: PartialTranslation = {
     perSeat: 'ආසනයකට',
     details: 'විස්තර බලන්න',
   },
-  serviceTypes: {
-    normal: 'සාමාන්‍ය',
-    semi_luxury: 'අර්ධ සුඛෝපභෝගී',
-    luxury: 'සුඛෝපභෝගී AC',
-    super_luxury: 'සුපිරි සුඛෝපභෝගී AC',
-  },
+  // Bus types keep their English names (Normal, Semi-Luxury, Luxury AC...),
+  // as passengers in Sri Lanka call them, so they come from en.ts.
   seatLayouts: {
     normal: '2+3 ආසන',
     semi_luxury: '2+2 ආසන',
@@ -263,7 +259,7 @@ export const si: PartialTranslation = {
   admin: {
     title: 'පරිපාලක',
     nav: {
-      dashboard: 'උපකරණ පුවරුව',
+      dashboard: 'පාලක පුවරුව',
       operators: 'ක්‍රියාකරුවන්',
       routes: 'මාර්ග',
       bookings: 'වෙන්කිරීම්',
@@ -398,7 +394,7 @@ export const si: PartialTranslation = {
       done_other: 'ගමන අවලංගු කළා: වෙන්කිරීම් {{count}}ක් ආපසු ගෙවා ඇත ({{amount}}).',
     },
     dashboard: {
-      title: 'උපකරණ පුවරුව',
+      title: 'පාලක පුවරුව',
       range: 'කාල සීමාව',
       lastDays_one: 'පසුගිය දින {{count}}',
       lastDays_other: 'පසුගිය දින {{count}}',

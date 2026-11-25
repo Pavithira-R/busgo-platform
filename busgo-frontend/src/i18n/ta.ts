@@ -15,7 +15,7 @@ export const ta: PartialTranslation = {
     login: 'உள்நுழைக',
     register: 'பதிவு செய்க',
     logout: 'வெளியேறு',
-    menu: 'பட்டியல்',
+    menu: 'மெனு',
     main: 'முதன்மை',
     profile: 'எனது சுயவிவரம்',
   },
@@ -116,7 +116,7 @@ export const ta: PartialTranslation = {
     clearFilters: 'வடிகட்டிகளை நீக்கு',
     noBuses: 'இந்த நகரங்களுக்கு இடையே பேருந்துகள் இயங்கவில்லை.',
     noMatch: 'இந்த வடிகட்டிகளுக்குப் பொருந்தும் பேருந்துகள் இல்லை.',
-    duration: '{{hours}}ம {{minutes}}நி',
+    duration: '{{hours}} மணி {{minutes}} நிமி.',
     via: '{{towns}} வழியாக',
     seatsLeft_one: '{{count}} இருக்கை மீதம்',
     seatsLeft_other: '{{count}} இருக்கைகள் மீதம்',
@@ -125,12 +125,8 @@ export const ta: PartialTranslation = {
     perSeat: 'ஒரு இருக்கைக்கு',
     details: 'விவரங்களைப் பார்',
   },
-  serviceTypes: {
-    normal: 'சாதாரண',
-    semi_luxury: 'அரை சொகுசு',
-    luxury: 'சொகுசு AC',
-    super_luxury: 'உயர் சொகுசு AC',
-  },
+  // Bus types keep their English names (Normal, Semi-Luxury, Luxury AC...),
+  // as passengers in Sri Lanka call them, so they come from en.ts.
   seatLayouts: {
     normal: '2+3 இருக்கைகள்',
     semi_luxury: '2+2 இருக்கைகள்',
