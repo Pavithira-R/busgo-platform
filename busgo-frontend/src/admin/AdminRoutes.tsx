@@ -1,10 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, Route, Routes } from 'react-router';
 import { DashboardPage } from './DashboardPage';
+import { OperatorsPage } from './OperatorsPage';
 
 /** Admin sections, in menu order. Each admin feature adds its page here. */
 const SECTIONS = [
   { path: '', label: 'admin.nav.dashboard', element: <DashboardPage /> },
+  {
+    path: 'operators',
+    label: 'admin.nav.operators',
+    element: <OperatorsPage />,
+  },
 ] as const;
 
 /**
