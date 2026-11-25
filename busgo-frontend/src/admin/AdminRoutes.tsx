@@ -2,6 +2,17 @@ import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, Route, Routes } from 'react-router';
 import { DashboardPage } from './DashboardPage';
 import { OperatorsPage } from './OperatorsPage';
+import { NewRoutePage, RoutesPage } from './RoutesPage';
+
+/** /admin/routes and /admin/routes/new */
+function RoutesSection() {
+  return (
+    <Routes>
+      <Route index element={<RoutesPage />} />
+      <Route path="new" element={<NewRoutePage />} />
+    </Routes>
+  );
+}
 
 /** Admin sections, in menu order. Each admin feature adds its page here. */
 const SECTIONS = [
@@ -11,6 +22,7 @@ const SECTIONS = [
     label: 'admin.nav.operators',
     element: <OperatorsPage />,
   },
+  { path: 'routes', label: 'admin.nav.routes', element: <RoutesSection /> },
 ] as const;
 
 /**
