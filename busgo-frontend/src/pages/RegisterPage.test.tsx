@@ -113,7 +113,7 @@ describe('RegisterPage', () => {
       screen.getByRole('button', { name: 'Create account' }),
     );
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Email is already registered',
+      'This email is already registered. Try logging in.',
     );
   });
 });

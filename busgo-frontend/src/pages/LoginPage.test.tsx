@@ -53,14 +53,14 @@ describe('LoginPage', () => {
     });
   });
 
-  it("shows the server's message for a wrong password", async () => {
+  it('explains a wrong password in plain words', async () => {
     mockFetch(401, { message: 'Invalid email or password' });
     renderLogin();
     await userEvent.type(screen.getByLabelText('Email'), 'kasun@example.lk');
     await userEvent.type(screen.getByLabelText('Password'), 'wrong');
     await userEvent.click(screen.getByRole('button', { name: 'Log in' }));
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Invalid email or password',
+      'Incorrect email or password.',
     );
   });
 

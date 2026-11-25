@@ -1,13 +1,23 @@
+import i18n from '../i18n';
+import { translateServerMessage } from './serverMessages';
 import { session } from './session';
+
+/** What to show the user, in their language where we can. */
+function readableMessage(status: number, details: string[]) {
+  if (status === 0) return i18n.t('errors.network');
+  // Server faults carry nothing useful for the user.
+  if (status >= 500 || details.length === 0) return i18n.t('errors.generic');
+  return details.map(translateServerMessage).join('\n');
+}
 
 /** An error response from the BusGo API, with a readable message. */
 export class ApiError extends Error {
   readonly status: number;
-  /** Individual validation messages, e.g. "email: Invalid email address". */
+  /** The server's own messages, e.g. "email: Invalid email address". */
   readonly details: string[];
 
   constructor(status: number, details: string[]) {
-    super(details.join('\n') || `Request failed (${status})`);
+    super(readableMessage(status, details));
     this.name = 'ApiError';
     this.status = status;
     this.details = details;
@@ -40,7 +50,7 @@ export async function api<T>(
     });
   } catch (err) {
     if ((err as Error).name === 'AbortError') throw err;
-    throw new ApiError(0, ['Cannot reach BusGo. Check your connection.']);
+    throw new ApiError(0, []);
   }
 
   const data: unknown = await response.json().catch(() => null);
