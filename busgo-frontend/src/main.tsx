@@ -1,0 +1,36 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router';
+import App from './App';
+import { AuthProvider } from './auth/AuthContext';
+import { ApiError } from './lib/api';
+import './i18n';
+import './index.css';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      // Don't retry requests the server rejected (bad input, not found...).
+      retry: (failures, error) =>
+        !(
+          error instanceof ApiError &&
+          error.status >= 400 &&
+          error.status < 500
+        ) && failures < 2,
+    },
+  },
+});
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryClientProvider>
+  </StrictMode>,
+);

@@ -1,0 +1,1480 @@
+{
+  "type": "base",
+  "version": "10",
+  "dialect": "postgres",
+  "id": "e734ae46-04a6-4b7d-bd65-9fa804cb5968",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "booking_status"
+      ],
+      "writes": [
+        "s|enum|public.booking_status",
+        "n|enum|public.booking_status",
+        "e|enum|public.booking_status",
+        "n|type|public.booking_status"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "payment_status"
+      ],
+      "writes": [
+        "s|enum|public.payment_status",
+        "n|enum|public.payment_status",
+        "e|enum|public.payment_status",
+        "n|type|public.payment_status"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "scan_result"
+      ],
+      "writes": [
+        "s|enum|public.scan_result",
+        "n|enum|public.scan_result",
+        "e|enum|public.scan_result",
+        "n|type|public.scan_result"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "service_type"
+      ],
+      "writes": [
+        "s|enum|public.service_type",
+        "n|enum|public.service_type",
+        "e|enum|public.service_type",
+        "n|type|public.service_type"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_enum",
+      "statementTarget": [
+        "enum",
+        "public",
+        "user_role"
+      ],
+      "writes": [
+        "s|enum|public.user_role",
+        "n|enum|public.user_role",
+        "e|enum|public.user_role",
+        "n|type|public.user_role"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "bookings"
+      ],
+      "writes": [
+        "s|tbl|public.bookings",
+        "n|tbl|public.bookings",
+        "e|tbl|public.bookings",
+        "n|rel|public.bookings",
+        "n|type|public.bookings",
+        "n|rel|public.bookings_pkey",
+        "n|rel|public.bookings_ticket_id_key"
+      ],
+      "reads": [
+        "n|sch|public",
+        "n|enum|public.payment_status",
+        "n|enum|public.booking_status"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "bus_routes"
+      ],
+      "writes": [
+        "s|tbl|public.bus_routes",
+        "n|tbl|public.bus_routes",
+        "e|tbl|public.bus_routes",
+        "n|rel|public.bus_routes",
+        "n|type|public.bus_routes",
+        "n|rel|public.bus_routes_pkey"
+      ],
+      "reads": [
+        "n|sch|public",
+        "n|enum|public.service_type"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "bus_stops"
+      ],
+      "writes": [
+        "s|tbl|public.bus_stops",
+        "n|tbl|public.bus_stops",
+        "e|tbl|public.bus_stops",
+        "n|rel|public.bus_stops",
+        "n|type|public.bus_stops",
+        "n|rel|public.bus_stops_pkey",
+        "n|rel|public.bus_stops_code_key"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "scan_logs"
+      ],
+      "writes": [
+        "s|tbl|public.scan_logs",
+        "n|tbl|public.scan_logs",
+        "e|tbl|public.scan_logs",
+        "n|rel|public.scan_logs",
+        "n|type|public.scan_logs",
+        "n|rel|public.scan_logs_pkey"
+      ],
+      "reads": [
+        "n|sch|public",
+        "n|enum|public.scan_result"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "users"
+      ],
+      "writes": [
+        "s|tbl|public.users",
+        "n|tbl|public.users",
+        "e|tbl|public.users",
+        "n|rel|public.users",
+        "n|type|public.users",
+        "n|rel|public.users_pkey",
+        "n|rel|public.users_email_key"
+      ],
+      "reads": [
+        "n|sch|public",
+        "n|enum|public.user_role"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "bookings",
+        "bookings_active_seat_uq"
+      ],
+      "writes": [
+        "s|idx|public.bookings_active_seat_uq",
+        "n|idx|public.bookings_active_seat_uq",
+        "e|idx|public.bookings_active_seat_uq",
+        "n|rel|public.bookings_active_seat_uq"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public",
+        "n|col|public.bookings.route_id",
+        "n|col|public.bookings.travel_date",
+        "n|col|public.bookings.seat_number"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "bookings",
+        "bookings_user_idx"
+      ],
+      "writes": [
+        "s|idx|public.bookings_user_idx",
+        "n|idx|public.bookings_user_idx",
+        "e|idx|public.bookings_user_idx",
+        "n|rel|public.bookings_user_idx"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public",
+        "n|col|public.bookings.user_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "bus_routes",
+        "bus_routes_from_to_idx"
+      ],
+      "writes": [
+        "s|idx|public.bus_routes_from_to_idx",
+        "n|idx|public.bus_routes_from_to_idx",
+        "e|idx|public.bus_routes_from_to_idx",
+        "n|rel|public.bus_routes_from_to_idx"
+      ],
+      "reads": [
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|col|public.bus_routes.from_stop_id",
+        "n|col|public.bus_routes.to_stop_id"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "scan_logs",
+        "scan_logs_booking_idx"
+      ],
+      "writes": [
+        "s|idx|public.scan_logs_booking_idx",
+        "n|idx|public.scan_logs_booking_idx",
+        "e|idx|public.scan_logs_booking_idx",
+        "n|rel|public.scan_logs_booking_idx"
+      ],
+      "reads": [
+        "n|tbl|public.scan_logs",
+        "n|sch|public",
+        "n|col|public.scan_logs.booking_id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "bookings"
+      ],
+      "writes": [
+        "s|fk|public.bookings.bookings_user_id_users_id_fkey",
+        "n|fk|public.bookings.bookings_user_id_users_id_fkey",
+        "e|fk|public.bookings.bookings_user_id_users_id_fkey",
+        "n|con|public.bookings.bookings_user_id_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.bookings.user_id",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "bookings"
+      ],
+      "writes": [
+        "s|fk|public.bookings.bookings_route_id_bus_routes_id_fkey",
+        "n|fk|public.bookings.bookings_route_id_bus_routes_id_fkey",
+        "e|fk|public.bookings.bookings_route_id_bus_routes_id_fkey",
+        "n|con|public.bookings.bookings_route_id_bus_routes_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public",
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|col|public.bookings.route_id",
+        "n|col|public.bus_routes.id",
+        "e|uniqueness|public.bus_routes.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "bus_routes"
+      ],
+      "writes": [
+        "s|fk|public.bus_routes.bus_routes_from_stop_id_bus_stops_id_fkey",
+        "n|fk|public.bus_routes.bus_routes_from_stop_id_bus_stops_id_fkey",
+        "e|fk|public.bus_routes.bus_routes_from_stop_id_bus_stops_id_fkey",
+        "n|con|public.bus_routes.bus_routes_from_stop_id_bus_stops_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|tbl|public.bus_stops",
+        "n|sch|public",
+        "n|col|public.bus_routes.from_stop_id",
+        "n|col|public.bus_stops.id",
+        "e|uniqueness|public.bus_stops.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "bus_routes"
+      ],
+      "writes": [
+        "s|fk|public.bus_routes.bus_routes_to_stop_id_bus_stops_id_fkey",
+        "n|fk|public.bus_routes.bus_routes_to_stop_id_bus_stops_id_fkey",
+        "e|fk|public.bus_routes.bus_routes_to_stop_id_bus_stops_id_fkey",
+        "n|con|public.bus_routes.bus_routes_to_stop_id_bus_stops_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.bus_routes",
+        "n|sch|public",
+        "n|tbl|public.bus_stops",
+        "n|sch|public",
+        "n|col|public.bus_routes.to_stop_id",
+        "n|col|public.bus_stops.id",
+        "e|uniqueness|public.bus_stops.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "scan_logs"
+      ],
+      "writes": [
+        "s|fk|public.scan_logs.scan_logs_booking_id_bookings_id_fkey",
+        "n|fk|public.scan_logs.scan_logs_booking_id_bookings_id_fkey",
+        "e|fk|public.scan_logs.scan_logs_booking_id_bookings_id_fkey",
+        "n|con|public.scan_logs.scan_logs_booking_id_bookings_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.scan_logs",
+        "n|sch|public",
+        "n|tbl|public.bookings",
+        "n|sch|public",
+        "n|col|public.scan_logs.booking_id",
+        "n|col|public.bookings.id",
+        "e|uniqueness|public.bookings.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "scan_logs"
+      ],
+      "writes": [
+        "s|fk|public.scan_logs.scan_logs_scanned_by_users_id_fkey",
+        "n|fk|public.scan_logs.scan_logs_scanned_by_users_id_fkey",
+        "e|fk|public.scan_logs.scan_logs_scanned_by_users_id_fkey",
+        "n|con|public.scan_logs.scan_logs_scanned_by_users_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.scan_logs",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.scan_logs.scanned_by",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ]
+    }
+  ],
+  "ddl": [
+    {
+      "schema": "public",
+      "name": "bookings",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "bus_routes",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "bus_stops",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "scan_logs",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "users",
+      "isRlsEnabled": false,
+      "entityType": "tables"
+    },
+    {
+      "schema": "public",
+      "name": "booking_status",
+      "values": [
+        "confirmed",
+        "cancelled",
+        "used",
+        "expired"
+      ],
+      "entityType": "enums"
+    },
+    {
+      "schema": "public",
+      "name": "payment_status",
+      "values": [
+        "pending",
+        "paid",
+        "refunded",
+        "failed"
+      ],
+      "entityType": "enums"
+    },
+    {
+      "schema": "public",
+      "name": "scan_result",
+      "values": [
+        "valid",
+        "invalid",
+        "already_used",
+        "expired"
+      ],
+      "entityType": "enums"
+    },
+    {
+      "schema": "public",
+      "name": "service_type",
+      "values": [
+        "standard",
+        "semi_luxury",
+        "luxury"
+      ],
+      "entityType": "enums"
+    },
+    {
+      "schema": "public",
+      "name": "user_role",
+      "values": [
+        "passenger",
+        "staff",
+        "admin"
+      ],
+      "entityType": "enums"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "bookings_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "ticket_id",
+      "type": "varchar(20)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "user_id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "route_id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "travel_date",
+      "type": "date",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "seat_number",
+      "type": "varchar(5)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "passenger_name",
+      "type": "varchar(100)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "passenger_email",
+      "type": "varchar(150)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "passenger_phone",
+      "type": "varchar(20)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "passenger_id_number",
+      "type": "varchar(50)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "base_price",
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "tax_amount",
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "total_amount",
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "payment_status",
+      "type": "payment_status",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'pending'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "booking_status",
+      "type": "booking_status",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'confirmed'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "qr_payload",
+      "type": "jsonb",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "booked_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "bus_routes_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "route_number",
+      "type": "varchar(20)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "from_stop_id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "to_stop_id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "departure_time",
+      "type": "time",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "arrival_time",
+      "type": "time",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "duration_minutes",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "price",
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "service_type",
+      "type": "service_type",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'standard'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "total_seats",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "48",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "bus_number",
+      "type": "varchar(20)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "is_active",
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "true",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_stops",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "bus_stops_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_stops",
+      "name": "name",
+      "type": "varchar(100)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_stops",
+      "name": "code",
+      "type": "varchar(10)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bus_stops",
+      "name": "city",
+      "type": "varchar(100)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "scan_logs_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "booking_id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "scanned_ticket_id",
+      "type": "varchar(50)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "scanned_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "result",
+      "type": "scan_result",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "scanned_by",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "location",
+      "type": "varchar(100)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "id",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": {
+        "type": "always",
+        "name": "users_id_seq",
+        "increment": "1",
+        "startWith": "1",
+        "minValue": "1",
+        "maxValue": "2147483647",
+        "cache": 1,
+        "cycle": false
+      },
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "full_name",
+      "type": "varchar(100)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "email",
+      "type": "varchar(150)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "phone",
+      "type": "varchar(20)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "password_hash",
+      "type": "varchar(255)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "id_number",
+      "type": "varchar(50)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "role",
+      "type": "user_role",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'passenger'",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "is_active",
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "true",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "entityType": "columns"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "bookings_active_seat_uq",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "route_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "travel_date",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "seat_number",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": true,
+      "where": "\"booking_status\" <> 'cancelled'",
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "bookings_user_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "bus_routes_from_to_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "from_stop_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "to_stop_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "scan_logs_booking_idx",
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "booking_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "entityType": "indexes"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "bookings_user_id_users_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "bookings_route_id_bus_routes_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "route_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "bus_routes",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "bus_routes_from_stop_id_bus_stops_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "from_stop_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "bus_stops",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "bus_routes_to_stop_id_bus_stops_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "to_stop_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "bus_stops",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "scan_logs_booking_id_bookings_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "booking_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "bookings",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "scan_logs_scanned_by_users_id_fkey",
+      "nameExplicit": false,
+      "columns": [
+        "scanned_by"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "entityType": "fks"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "bookings_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "bus_routes_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "bus_stops",
+      "name": "bus_stops_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "scan_logs",
+      "name": "scan_logs_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users_pkey",
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "entityType": "pks"
+    },
+    {
+      "schema": "public",
+      "table": "bookings",
+      "name": "bookings_ticket_id_key",
+      "nameExplicit": false,
+      "columns": [
+        "ticket_id"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "bus_stops",
+      "name": "bus_stops_code_key",
+      "nameExplicit": false,
+      "columns": [
+        "code"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "users",
+      "name": "users_email_key",
+      "nameExplicit": false,
+      "columns": [
+        "email"
+      ],
+      "nullsNotDistinct": false,
+      "entityType": "uniques"
+    },
+    {
+      "schema": "public",
+      "table": "bus_routes",
+      "name": "bus_routes_different_stops",
+      "value": "\"from_stop_id\" <> \"to_stop_id\"",
+      "entityType": "checks"
+    }
+  ]
+}

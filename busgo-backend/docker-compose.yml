@@ -1,14 +1,16 @@
-version: "3.9"
-
+# Local development database. Same major version as the AWS RDS instance (16).
 services:
-  api:
-    build: .
-    container_name: busgo-api
+  db:
+    image: postgres:16-alpine
+    container_name: busgo-db
+    environment:
+      POSTGRES_USER: busgo
+      POSTGRES_PASSWORD: busgo
+      POSTGRES_DB: busgo
     ports:
-      - "8000:8000"
-    env_file:
-      - .env
+      - '5432:5432'
     volumes:
-      - .:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    restart: unless-stopped
+      - busgo-pgdata:/var/lib/postgresql/data
+
+volumes:
+  busgo-pgdata:

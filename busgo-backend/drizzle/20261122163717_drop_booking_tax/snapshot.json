@@ -1,0 +1,35 @@
+{
+  "type": "diff",
+  "version": "10",
+  "dialect": "postgres",
+  "id": "e79024ab-f8bc-4950-879a-f345bfc8534f",
+  "prevIds": [
+    "54679b0e-d455-4f5a-8279-f27438456506"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "bookings",
+        "tax_amount"
+      ],
+      "writes": [
+        "s|col|public.bookings.tax_amount",
+        "n|col|public.bookings.tax_amount",
+        "e|col|public.bookings.tax_amount"
+      ],
+      "reads": [
+        "n|tbl|public.bookings",
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "drop",
+      "key": "columns\u0000[\"public\",\"bookings\",\"tax_amount\"]"
+    }
+  ]
+}
