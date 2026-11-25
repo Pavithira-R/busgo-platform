@@ -15,3 +15,13 @@ export function formatDuration(t: TFunction, minutes: number) {
     minutes: minutes % 60,
   });
 }
+
+/** 1,284 / 12.9K: compact once numbers reach ten thousand. */
+export function formatCompact(value: number) {
+  return Math.abs(value) >= 10_000
+    ? new Intl.NumberFormat('en', {
+        notation: 'compact',
+        maximumFractionDigits: 1,
+      }).format(value)
+    : value.toLocaleString('en-LK');
+}

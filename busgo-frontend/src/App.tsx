@@ -1,7 +1,10 @@
+import { lazy, Suspense } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router';
 import { GuestOnly } from './auth/GuestOnly';
 import { RequireAuth } from './auth/RequireAuth';
 import { Layout } from './components/Layout';
+import { Spinner } from './components/ui';
 import { BookingPage } from './pages/BookingPage';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
@@ -13,8 +16,12 @@ import { RouteDetailsPage } from './pages/RouteDetailsPage';
 import { SearchResultsPage } from './pages/SearchResultsPage';
 import { TicketPage } from './pages/TicketPage';
 
+// Admin pages (and their chart library) download only when an admin opens them.
+const AdminRoutes = lazy(() => import('./admin/AdminRoutes'));
+
 /** All pages. Each feature adds its routes here. */
 export default function App() {
+  const { t } = useTranslation();
   return (
     <Routes>
       <Route element={<Layout />}>
@@ -66,6 +73,16 @@ export default function App() {
           element={
             <RequireAuth>
               <ProfilePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="admin/*"
+          element={
+            <RequireAuth roles={['admin']}>
+              <Suspense fallback={<Spinner label={t('common.loading')} />}>
+                <AdminRoutes />
+              </Suspense>
             </RequireAuth>
           }
         />
