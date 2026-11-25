@@ -3,6 +3,7 @@ import { NavLink, Outlet, Route, Routes } from 'react-router';
 import { BookingsPage } from './BookingsPage';
 import { DashboardPage } from './DashboardPage';
 import { OperatorsPage } from './OperatorsPage';
+import { PassengersPage } from './PassengersPage';
 import { RouteManagePage } from './RouteManagePage';
 import { NewRoutePage, RoutesPage } from './RoutesPage';
 
@@ -27,6 +28,11 @@ const SECTIONS = [
   },
   { path: 'routes', label: 'admin.nav.routes', element: <RoutesSection /> },
   { path: 'bookings', label: 'admin.nav.bookings', element: <BookingsPage /> },
+  {
+    path: 'passengers',
+    label: 'admin.nav.passengers',
+    element: <PassengersPage />,
+  },
 ] as const;
 
 /**
