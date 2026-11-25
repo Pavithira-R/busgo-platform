@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, Route, Routes } from 'react-router';
+import { BookingsPage } from './BookingsPage';
 import { DashboardPage } from './DashboardPage';
 import { OperatorsPage } from './OperatorsPage';
 import { RouteManagePage } from './RouteManagePage';
@@ -25,6 +26,7 @@ const SECTIONS = [
     element: <OperatorsPage />,
   },
   { path: 'routes', label: 'admin.nav.routes', element: <RoutesSection /> },
+  { path: 'bookings', label: 'admin.nav.bookings', element: <BookingsPage /> },
 ] as const;
 
 /**
