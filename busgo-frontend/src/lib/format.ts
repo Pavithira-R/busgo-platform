@@ -1,11 +1,16 @@
 import type { TFunction } from 'i18next';
+import i18n from '../i18n';
 
 /** Flat booking fee added to every ticket, in LKR (same as the backend). */
 export const SERVICE_FEE = 100;
 
-/** "LKR 1,050": digits stay Western in every language, as on Sri Lankan tickets. */
+/**
+ * "LKR 1,050" / "රු. 1,050" / "ரூ. 1,050": the rupee sign follows the
+ * language; digits stay Western, as on Sri Lankan tickets.
+ */
 export function formatLkr(amount: number): string {
-  return `LKR ${amount.toLocaleString('en-LK', { maximumFractionDigits: 2 })}`;
+  const digits = amount.toLocaleString('en-LK', { maximumFractionDigits: 2 });
+  return `${i18n.t('common.currency')} ${digits}`;
 }
 
 /** "3h 30m" in the UI language. */
