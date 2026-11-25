@@ -15,9 +15,11 @@ import { ServiceTypeBadge } from '../search/RouteCard';
 export function TicketPage() {
   const { t } = useTranslation();
   const ticketId = useParams().ticketId?.toUpperCase() ?? '';
-  const justBooked = Boolean(
-    (useLocation().state as { justBooked?: boolean } | null)?.justBooked,
-  );
+  const state = useLocation().state as {
+    justBooked?: boolean;
+    /** Opened from the admin bookings list: view only. */
+    fromAdmin?: boolean;
+  } | null;
   const ticket = useTicket(ticketId);
 
   if (ticket.isPending) return <Spinner label={t('common.loading')} />;
@@ -33,15 +35,23 @@ export function TicketPage() {
       </div>
     );
   }
-  return <TicketView ticket={ticket.data} justBooked={justBooked} />;
+  return (
+    <TicketView
+      ticket={ticket.data}
+      justBooked={Boolean(state?.justBooked)}
+      fromAdmin={Boolean(state?.fromAdmin)}
+    />
+  );
 }
 
 function TicketView({
   ticket,
   justBooked,
+  fromAdmin,
 }: {
   ticket: Ticket;
   justBooked: boolean;
+  fromAdmin: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const [justCancelled, setJustCancelled] = useState(false);
@@ -175,21 +185,33 @@ function TicketView({
             {t('ticket.print')}
           </Button>
         )}
-        <Link
-          to="/bookings"
-          className="inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-semibold text-brand-700 hover:underline dark:text-brand-200"
-        >
-          {t('nav.myBookings')}
-        </Link>
-        <Link
-          to="/"
-          className="inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-semibold text-brand-700 hover:underline dark:text-brand-200"
-        >
-          {t('ticket.bookAnother')}
-        </Link>
+        {fromAdmin ? (
+          <Link
+            to="/admin/bookings"
+            className="inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-semibold text-brand-700 hover:underline dark:text-brand-200"
+          >
+            ← {t('admin.bookings.back')}
+          </Link>
+        ) : (
+          <>
+            <Link
+              to="/bookings"
+              className="inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-semibold text-brand-700 hover:underline dark:text-brand-200"
+            >
+              {t('nav.myBookings')}
+            </Link>
+            <Link
+              to="/"
+              className="inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-semibold text-brand-700 hover:underline dark:text-brand-200"
+            >
+              {t('ticket.bookAnother')}
+            </Link>
+          </>
+        )}
       </div>
 
-      {ticket.status === 'confirmed' && !departed && (
+      {/* Only the passenger can cancel; admins viewing a ticket can't. */}
+      {!fromAdmin && ticket.status === 'confirmed' && !departed && (
         <CancelBooking
           ticketId={ticket.ticketId}
           onCancelled={() => setJustCancelled(true)}
