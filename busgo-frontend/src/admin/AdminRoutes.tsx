@@ -6,6 +6,7 @@ import { OperatorsPage } from './OperatorsPage';
 import { PassengersPage } from './PassengersPage';
 import { RouteManagePage } from './RouteManagePage';
 import { NewRoutePage, RoutesPage } from './RoutesPage';
+import { StaffPage } from './StaffPage';
 
 /** /admin/routes, /admin/routes/new and /admin/routes/:id */
 function RoutesSection() {
@@ -33,6 +34,7 @@ const SECTIONS = [
     label: 'admin.nav.passengers',
     element: <PassengersPage />,
   },
+  { path: 'staff', label: 'admin.nav.staff', element: <StaffPage /> },
 ] as const;
 
 /**
