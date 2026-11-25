@@ -82,7 +82,7 @@ export function Layout() {
             {t('common.appName')}
           </Link>
           <nav
-            aria-label="Main"
+            aria-label={t('nav.main')}
             className="ml-auto hidden items-center gap-1 md:flex"
           >
             {links}
@@ -118,7 +118,7 @@ export function Layout() {
         {menuOpen && (
           <nav
             id="mobile-menu"
-            aria-label="Main"
+            aria-label={t('nav.main')}
             className="flex flex-col gap-1 border-t border-brand-600 px-4 py-3 md:hidden"
           >
             {links}

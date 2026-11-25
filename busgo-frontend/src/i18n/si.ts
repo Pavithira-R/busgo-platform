@@ -6,6 +6,7 @@ export const si: PartialTranslation = {
     loading: 'පූරණය වෙමින්…',
     noAccess: 'ඔබට මෙම පිටුවට ප්‍රවේශ වීමට අවසර නැත.',
     language: 'භාෂාව',
+    currency: 'රු.',
   },
   nav: {
     search: 'බස් සොයන්න',
@@ -15,6 +16,7 @@ export const si: PartialTranslation = {
     register: 'ලියාපදිංචි වන්න',
     logout: 'ඉවත් වන්න',
     menu: 'මෙනුව',
+    main: 'ප්‍රධාන',
     profile: 'මගේ පැතිකඩ',
   },
   auth: {
@@ -61,6 +63,15 @@ export const si: PartialTranslation = {
     mobile: 'ශ්‍රී ලාංකික ජංගම අංකයක් ඇතුළත් කරන්න, උදා: 077 123 4567',
     nic: 'වලංගු ජා.හැ.අ. ඇතුළත් කරන්න, උදා: 851234567V හෝ 198512345678',
     generic: 'යම් දෝෂයක් සිදුවිය. කරුණාකර නැවත උත්සාහ කරන්න.',
+    network: 'BusGo වෙත සම්බන්ධ විය නොහැක. ඔබේ සම්බන්ධතාවය පරීක්ෂා කරන්න.',
+    badLogin: 'විද්‍යුත් තැපෑල හෝ මුරපදය වැරදියි.',
+    emailTaken: 'මෙම විද්‍යුත් තැපෑල දැනටමත් ලියාපදිංචි කර ඇත. පිවිසීමට උත්සාහ කරන්න.',
+    seatTaken: 'ආසනය {{seat}} මෙම ගමන සඳහා දැනටමත් වෙන්කර ඇත.',
+    departed: 'මෙම බස් රථය දැනටමත් පිටත්ව ගොස් ඇත.',
+    pastDate: 'ගමන් දිනය පසුවී ඇත.',
+    tooEarly: 'ගමනට දින {{days}}කට පෙර සිට වෙන්කිරීම් විවෘතයි.',
+    cannotCancel: 'මෙම වෙන්කිරීම තවදුරටත් අවලංගු කළ නොහැක.',
+    alreadyStatus: 'මෙම වෙන්කිරීම දැනටමත් {{status}}.',
     cardNumber: 'වලංගු ඉලක්කම් 16ක කාඩ්පත් අංකයක් ඇතුළත් කරන්න',
     cardExpiry: 'වලංගු කල් ඉකුත්වන දිනයක් ඇතුළත් කරන්න, උදා: 08/28',
     cardCvv: 'කාඩ්පතේ පිටුපස ඇති ඉලක්කම් 3 ඇතුළත් කරන්න',
@@ -110,12 +121,8 @@ export const si: PartialTranslation = {
     perSeat: 'ආසනයකට',
     details: 'විස්තර බලන්න',
   },
-  serviceTypes: {
-    normal: 'සාමාන්‍ය',
-    semi_luxury: 'අර්ධ සුඛෝපභෝගී',
-    luxury: 'සුඛෝපභෝගී AC',
-    super_luxury: 'සුපිරි සුඛෝපභෝගී AC',
-  },
+  // Bus types keep their English names (Normal, Semi-Luxury, Luxury AC...),
+  // as passengers in Sri Lanka call them, so they come from en.ts.
   seatLayouts: {
     normal: '2+3 ආසන',
     semi_luxury: '2+2 ආසන',
@@ -252,7 +259,7 @@ export const si: PartialTranslation = {
   admin: {
     title: 'පරිපාලක',
     nav: {
-      dashboard: 'උපකරණ පුවරුව',
+      dashboard: 'පාලක පුවරුව',
       operators: 'ක්‍රියාකරුවන්',
       routes: 'මාර්ග',
       bookings: 'වෙන්කිරීම්',
@@ -387,7 +394,7 @@ export const si: PartialTranslation = {
       done_other: 'ගමන අවලංගු කළා: වෙන්කිරීම් {{count}}ක් ආපසු ගෙවා ඇත ({{amount}}).',
     },
     dashboard: {
-      title: 'උපකරණ පුවරුව',
+      title: 'පාලක පුවරුව',
       range: 'කාල සීමාව',
       lastDays_one: 'පසුගිය දින {{count}}',
       lastDays_other: 'පසුගිය දින {{count}}',
