@@ -9,7 +9,14 @@ import type { User } from '../lib/types';
 /** Renders UI with the same providers as the real app, at a given URL. */
 export function renderWithProviders(
   ui: ReactElement,
-  { route = '/', user }: { route?: string; user?: User } = {},
+  {
+    route = '/',
+    user,
+  }: {
+    /** A URL, or a URL with navigation state (e.g. { pathname, state }). */
+    route?: string | { pathname: string; search?: string; state?: unknown };
+    user?: User;
+  } = {},
 ) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },

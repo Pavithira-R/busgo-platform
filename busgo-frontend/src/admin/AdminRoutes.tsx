@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, Route, Routes } from 'react-router';
+import { BookingsPage } from './BookingsPage';
 import { DashboardPage } from './DashboardPage';
 import { OperatorsPage } from './OperatorsPage';
+import { PassengersPage } from './PassengersPage';
 import { RouteManagePage } from './RouteManagePage';
 import { NewRoutePage, RoutesPage } from './RoutesPage';
+import { StaffPage } from './StaffPage';
 
 /** /admin/routes, /admin/routes/new and /admin/routes/:id */
 function RoutesSection() {
@@ -25,6 +28,13 @@ const SECTIONS = [
     element: <OperatorsPage />,
   },
   { path: 'routes', label: 'admin.nav.routes', element: <RoutesSection /> },
+  { path: 'bookings', label: 'admin.nav.bookings', element: <BookingsPage /> },
+  {
+    path: 'passengers',
+    label: 'admin.nav.passengers',
+    element: <PassengersPage />,
+  },
+  { path: 'staff', label: 'admin.nav.staff', element: <StaffPage /> },
 ] as const;
 
 /**

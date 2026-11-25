@@ -154,4 +154,24 @@ describe('Cancelling a ticket', () => {
       screen.queryByRole('button', { name: 'Cancel booking' }),
     ).not.toBeInTheDocument();
   });
+
+  it('is view-only when an admin opens it from the bookings list', async () => {
+    mockApi({ '/bookings/BG-7K2M9QXA': makeTicket() });
+    renderWithProviders(
+      <Routes>
+        <Route path="tickets/:ticketId" element={<TicketPage />} />
+      </Routes>,
+      {
+        route: { pathname: '/tickets/BG-7K2M9QXA', state: { fromAdmin: true } },
+        user: makeUser({ role: 'admin' }),
+      },
+    );
+    expect(await screen.findByText('Confirmed')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Cancel booking' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /Back to bookings/ }),
+    ).toHaveAttribute('href', '/admin/bookings');
+  });
 });

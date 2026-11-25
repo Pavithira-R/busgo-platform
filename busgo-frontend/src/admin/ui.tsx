@@ -103,3 +103,52 @@ export function LinkButton(
     />
   );
 }
+
+/** "21-40 of 135" with Previous / Next buttons. */
+export function Pager({
+  page,
+  limit,
+  total,
+  onChange,
+}: {
+  page: number;
+  limit: number;
+  total: number;
+  onChange: (page: number) => void;
+}) {
+  const { t } = useTranslation();
+  if (total === 0) return null;
+  const last = Math.max(1, Math.ceil(total / limit));
+  return (
+    <nav
+      aria-label={t('admin.pager.label')}
+      className="flex flex-wrap items-center justify-between gap-3 text-sm"
+    >
+      <p className="text-slate-600 dark:text-slate-400">
+        {t('admin.pager.showing', {
+          from: (page - 1) * limit + 1,
+          to: Math.min(page * limit, total),
+          total,
+        })}
+      </p>
+      <div className="flex gap-2">
+        <button
+          type="button"
+          disabled={page <= 1}
+          onClick={() => onChange(page - 1)}
+          className="rounded-lg px-3 py-1.5 font-medium ring-1 ring-slate-300 hover:bg-white disabled:opacity-40 dark:ring-slate-700 dark:hover:bg-slate-900"
+        >
+          {t('admin.pager.previous')}
+        </button>
+        <button
+          type="button"
+          disabled={page >= last}
+          onClick={() => onChange(page + 1)}
+          className="rounded-lg px-3 py-1.5 font-medium ring-1 ring-slate-300 hover:bg-white disabled:opacity-40 dark:ring-slate-700 dark:hover:bg-slate-900"
+        >
+          {t('admin.pager.next')}
+        </button>
+      </div>
+    </nav>
+  );
+}

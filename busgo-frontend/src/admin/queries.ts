@@ -5,8 +5,13 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { api } from '../lib/api';
+import type { Ticket } from '../lib/types';
 import type {
   AdminOperator,
+  AdminPassenger,
+  BookingFilters,
+  Page,
+  StaffMember,
   AdminRoute,
   AdminRouteDetails,
   CancelTripResult,
@@ -147,6 +152,78 @@ export function useCancelTrip(id: number) {
       void queryClient.invalidateQueries({ queryKey: ['admin'] });
       void queryClient.invalidateQueries({ queryKey: ['seats'] });
       void queryClient.invalidateQueries({ queryKey: ['routes'] });
+    },
+  });
+}
+
+// ---------- People ----------
+
+/** Rows per page in the admin lists. */
+export const PAGE_SIZE = 20;
+
+/** Builds ?a=1&b=2 from the given values, leaving out empty ones. */
+function query(values: Record<string, string | number | undefined>) {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(values)) {
+    if (value !== undefined && value !== '') params.set(key, String(value));
+  }
+  return params.toString();
+}
+
+export function useAdminBookings(filters: BookingFilters) {
+  return useQuery({
+    queryKey: ['admin', 'bookings', filters],
+    queryFn: ({ signal }) =>
+      api<Page<Ticket>>(
+        `/admin/bookings?${query({ ...filters, limit: PAGE_SIZE })}`,
+        { signal },
+      ),
+    placeholderData: (previous) => previous,
+  });
+}
+
+export function useAdminPassengers(search: string, page: number) {
+  return useQuery({
+    queryKey: ['admin', 'passengers', { search, page }],
+    queryFn: ({ signal }) =>
+      api<Page<AdminPassenger>>(
+        `/admin/passengers?${query({ search, page, limit: PAGE_SIZE })}`,
+        { signal },
+      ),
+    placeholderData: (previous) => previous,
+  });
+}
+
+export function useStaff() {
+  return useQuery({
+    queryKey: ['admin', 'staff'],
+    queryFn: ({ signal }) => api<StaffMember[]>('/admin/staff', { signal }),
+  });
+}
+
+export function useCreateStaff() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      fullName: string;
+      email: string;
+      password: string;
+      phone?: string;
+    }) => api<StaffMember>('/admin/staff', { method: 'POST', body }),
+    onSuccess: () =>
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'staff'] }),
+  });
+}
+
+/** Deactivated users can't sign in, and their current login stops working. */
+export function useSetUserActive() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, isActive }: { id: number; isActive: boolean }) =>
+      api(`/admin/users/${id}/status`, { method: 'PATCH', body: { isActive } }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'staff'] });
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'passengers'] });
     },
   });
 }
