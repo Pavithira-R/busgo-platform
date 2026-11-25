@@ -2,14 +2,16 @@ import { useTranslation } from 'react-i18next';
 import { NavLink, Outlet, Route, Routes } from 'react-router';
 import { DashboardPage } from './DashboardPage';
 import { OperatorsPage } from './OperatorsPage';
+import { RouteManagePage } from './RouteManagePage';
 import { NewRoutePage, RoutesPage } from './RoutesPage';
 
-/** /admin/routes and /admin/routes/new */
+/** /admin/routes, /admin/routes/new and /admin/routes/:id */
 function RoutesSection() {
   return (
     <Routes>
       <Route index element={<RoutesPage />} />
       <Route path="new" element={<NewRoutePage />} />
+      <Route path=":id" element={<RouteManagePage />} />
     </Routes>
   );
 }
