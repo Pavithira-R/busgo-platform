@@ -1,126 +1,68 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# BusGo API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+The NestJS backend for BusGo: accounts, bus search, seat bookings, e-tickets with QR codes, refunds, gate scanning and the admin area. See the [main README](../README.md) for the whole project.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Setup
 
 ```bash
-$ npm install
+cp .env.example .env      # set JWT_SECRET to a long random value
+npm install
+npm run db:migrate        # create the tables
+npm run db:seed           # sample stops, operators, routes and demo accounts
+npm run start:dev         # http://localhost:3000, docs at /docs
 ```
 
-## Compile and run the project
+Requires Node.js 24 and PostgreSQL 16+ (see the main README for creating the database).
 
-```bash
-# development
-$ npm run start
+## Scripts
 
-# watch mode
-$ npm run start:dev
+| Script                | What it does                                         |
+| --------------------- | ---------------------------------------------------- |
+| `start:dev`           | Run with reload on change                            |
+| `build`, `start:prod` | Compile to `dist/` and run it                        |
+| `test`                | Unit tests                                           |
+| `test:e2e`            | End-to-end tests against the database in `.env`      |
+| `lint`, `format`      | Oxlint and Prettier                                  |
+| `db:migrate`          | Apply migrations in `drizzle/`                       |
+| `db:generate`         | Create a migration after changing `src/db/schema.ts` |
+| `db:seed`             | Add the sample data (safe to run again)              |
+| `db:reset`            | Empty the database and seed it again                 |
+| `db:studio`           | Browse the data in Drizzle Studio                    |
+| `db:up`, `db:down`    | Start or stop a PostgreSQL container (Docker)        |
 
-# production mode
-$ npm run start:prod
-```
+## Settings (`.env`)
 
-## Run tests
+| Name                                                            | Purpose                                                                |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `DATABASE_URL`                                                  | PostgreSQL connection string                                           |
+| `PORT`                                                          | API port (default 3000)                                                |
+| `CORS_ORIGIN`                                                   | Website address allowed to call the API                                |
+| `JWT_SECRET`                                                    | Signs login tokens; at least 32 characters (`openssl rand -base64 32`) |
+| `JWT_TTL`                                                       | How long a login lasts (default `1h`)                                  |
+| `MAIL_TRANSPORT`                                                | `file` saves emails to `MAIL_DIR`; `log` prints them                   |
+| `MAIL_DIR`, `MAIL_FROM`                                         | Where emails are saved, and their sender                               |
+| `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, `SEED_DEMO_PASSWORD` | Accounts created by `db:seed`                                          |
 
-```bash
-# unit tests
-$ npm run test
+Settings are checked at start-up; the API refuses to start with a missing or invalid value.
 
-# e2e tests
-$ npm run test:e2e
+## API overview
 
-# test coverage
-$ npm run test:cov
-```
+All routes are under `/api`. Full, interactive documentation is at `/docs` while the API runs.
 
-## Deployment
+| Area     | Routes                                                                                                                                                                          | Who                |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| Accounts | `POST /auth/register`, `POST /auth/login`, `GET` / `PATCH /auth/me`                                                                                                             | Anyone / signed in |
+| Search   | `GET /routes/stops`, `/routes/operators`, `/routes?from=&to=&date=`, `/routes/:id`, `/routes/:id/seats?date=`                                                                   | Anyone             |
+| Bookings | `POST /bookings`, `GET /bookings`, `GET /bookings/:ticketId`, `GET /bookings/:ticketId/cancellation`, `PUT /bookings/:ticketId/cancel`                                          | Signed in          |
+| Gate     | `POST /qr/validate`, `GET /qr/lookup/:ticketId`, `GET /qr/history/:ticketId`                                                                                                    | Gate staff, admins |
+| Admin    | `/admin/dashboard`, `/admin/operators`, `/admin/routes` (boarding points, trip cancellation), `/admin/bookings`, `/admin/passengers`, `/admin/staff`, `/admin/users/:id/status` | Admins             |
+| Health   | `GET /health`                                                                                                                                                                   | Anyone             |
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Rules worth knowing
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Observability
-
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-This project is already instrumented. To connect it, run this and approve the code it prints at [observe.nestjs.com/link](https://observe.nestjs.com/link) - signing up for free if you have no account:
-
-```bash
-$ npx @nestjs/observe link
-```
-
-It writes the app key and secret into `.env` and makes every `nest start` script (`start`, `start:dev`, `start:debug`) load it. In production, set `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment instead.
-
-Or do it by hand: create an application and an API key at [observe.nestjs.com](https://observe.nestjs.com), and set the pair as `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET` in the environment the app runs in.
-
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- **Seats can't be double-booked**: a unique database index on (route, date, seat) for active bookings settles simultaneous requests.
+- **Booking window**: today up to 30 days ahead, Sri Lanka time (UTC+05:30), and not after the bus has left.
+- **Price**: fare + LKR 100 service fee.
+- **Passenger cancellations** deduct from the fare: more than 7 days before departure 5% + LKR 300; 3–7 days 10% + LKR 300; 24–72 hours 12% + LKR 350; under 24 hours 15% + LKR 350; none after departure. The service fee is not refunded.
+- **Operator cancels a trip**: everyone booked gets the full amount back, service fee included.
+- **QR codes** can be used once, on the travel date (overnight buses: until the next day, for towns reached after midnight).
